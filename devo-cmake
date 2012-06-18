@@ -1,0 +1,32 @@
+#!/bin/sh
+set -e
+
+OVERLAY_DIR=$HOME/.config/devo
+
+die() {
+    echo "ERROR: $*" 1>&2
+    exit 1
+}
+
+checkvar() {
+    local name
+    name=$1
+    if ! env | grep -q "^$name=" ; then
+        die "'$name' environment variable is not set"
+    fi
+}
+
+checkvar DEVO_NAME
+checkvar DEVO_PREFIX
+checkvar DEVO_CMAKE_BUILD_TYPE
+
+if [ $# = 0 ] ; then
+    [ -n "$DEVO_SOURCE_BASE_DIR" ] || die "No argument given and no \$DEVO_SOURCE_BASE_DIR environment variable set"
+    dir=$DEVO_SOURCE_BASE_DIR/$(basename $PWD)
+    [ -d "$dir" ] || die "Tried to find source dir from \$DEVO_SOURCE_BASE_DIR, but \"$dir\" does not exist"
+fi
+
+cmake \
+    -DCMAKE_INSTALL_PREFIX=$DEVO_PREFIX \
+    -DCMAKE_BUILD_TYPE=$DEVO_CMAKE_BUILD_TYPE \
+    $dir $*

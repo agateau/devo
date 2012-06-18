@@ -1,0 +1,7 @@
+# This file must be sourced by the shell
+
+devo-setup() {
+    local prefix=$1
+    . ~/.config/devo/$prefix
+    rehash
+}

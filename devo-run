@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+
+OVERLAY_DIR=$HOME/.config/devo
+
+overlay=$1
+shift
+. $OVERLAY_DIR/$overlay
+
+exec $*
