@@ -12,6 +12,8 @@ from runner import Runner
 
 USAGE="%prog <project.yaml> [module1 [module2...]]"
 
+def list_auto_modules(modules):
+    return [x for x in modules if x.get("auto", True)]
 
 def main():
     parser = OptionParser(usage=USAGE)
@@ -63,7 +65,7 @@ def main():
     elif options.resume_from is not None:
         module_configs = []
         found = False
-        for module_config in config["modules"]:
+        for module_config in list_auto_modules(config["modules"]):
             if not found:
                 name = module_config["name"]
                 if name == options.resume_from:
@@ -74,7 +76,7 @@ def main():
         if not found:
             logging.error("Unknown module %s" % options.resume_from)
     else:
-        module_configs = config["modules"]
+        module_configs = list_auto_modules(config["modules"])
 
     # Setup logging
     log_dir = os.path.join(base_dir, "log")
