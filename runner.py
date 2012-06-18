@@ -14,7 +14,7 @@ class Runner(object):
         print >>self.log_file, "devo-batchbuild: " + msg
 
     def run(self, cwd, command):
-        self._info_log("Running command '%s' in dir '%s'" % (command, cwd))
+        self._info_log("%s: %s" % (cwd, command))
         process = subprocess.Popen(command, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
         while True:
             out = process.stdout.readline()
