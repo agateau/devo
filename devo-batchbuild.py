@@ -16,10 +16,13 @@ USAGE="%prog <project.yaml> [module1 [module2...]]"
 def main():
     parser = OptionParser(usage=USAGE)
 
-    # Add an invert boolean option stored in options.verbose.
     parser.add_option("-v", "--verbose",
                       action="store_true", dest="verbose", default=False,
                       help="Print command output to stdout")
+
+    parser.add_option("--no-src",
+                      action="store_true", dest="no_src", default=False,
+                      help="Do not update source code")
 
     parser.add_option("--resume-from", dest="resume_from", default=None,
                       metavar="MODULE",
@@ -83,10 +86,11 @@ def main():
         runner = Runner(log_file, options.verbose)
         module = Module(config["global"], module_config, runner)
         try:
-            if module.has_checkout():
-                module.update()
-            else:
-                module.checkout()
+            if not options.no_src:
+                if module.has_checkout():
+                    module.update()
+                else:
+                    module.checkout()
             module.configure()
             module.build()
             module.install()
