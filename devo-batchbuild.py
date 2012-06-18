@@ -29,7 +29,7 @@ def main():
                       help="Resume build from MODULE")
 
     (options, args) = parser.parse_args()
-    logging.basicConfig(format="devo-batchbuild: %(asctime)s %(message)s", level=logging.DEBUG)
+    logging.basicConfig(format="%(asctime)s %(message)s", datefmt="%H:%M:%S", level=logging.DEBUG)
 
     # Check devo name
     devo_name = os.environ.get("DEVO_NAME", None)
