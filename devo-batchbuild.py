@@ -20,6 +20,10 @@ def main():
                       action="store_true", dest="verbose", default=False,
                       help="Print command output to stdout")
 
+    parser.add_option("--dry-run",
+                      action="store_true", dest="dry_run", default=False,
+                      help="Just list what would be build")
+
     parser.add_option("--no-src",
                       action="store_true", dest="no_src", default=False,
                       help="Do not update source code")
@@ -76,6 +80,12 @@ def main():
     log_dir = os.path.join(base_dir, "log")
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
+
+    if options.dry_run:
+        print "Would build:"
+        for module_config in module_configs:
+            print "- " + module_config["name"]
+        return 0
 
     fails = []
     for module_config in module_configs:
