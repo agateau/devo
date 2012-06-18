@@ -74,3 +74,6 @@ modules:
 - name: gwenview
   repo-type: kdegit
   configure-options: -DJCONFIG_H=/usr/include/x86_64-linux-gnu/jconfig.h
+
+- name: okular
+  repo-type: kdegit
