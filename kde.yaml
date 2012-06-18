@@ -21,6 +21,9 @@ modules:
 - name: soprano
   repo-type: kdegit
 
+- name: strigi
+  repo-type: kdegit
+
 - name: polkit-qt-1
   repo-type: kdegit
 
@@ -81,5 +84,17 @@ modules:
   repo-type: kdegit
   configure-options: -DJCONFIG_H=/usr/include/x86_64-linux-gnu/jconfig.h
 
+- name: kipi-plugins
+  repo-type: kdegit
+
 - name: okular
   repo-type: kdegit
+
+# KDevelop
+- name: kdevplatform
+  repo-type: kdegit
+  auto: false
+
+- name: kdevelop
+  repo-type: kdegit
+  auto: false
