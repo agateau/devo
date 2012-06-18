@@ -25,6 +25,10 @@ modules:
   repo-type: kdegit
 
 # Platform
+- name: libdbusmenu-qt
+  repo-type: bzr
+  repo-url: lp:libdbusmenu-qt
+
 - name: kdelibs
   repo-type: kdegit
 
