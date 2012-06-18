@@ -4,9 +4,57 @@ global:
   build-options: -j2
 
 modules:
-#- repo-type: git
-#  repo-url: kde:kdelibs
+# "support"
+- name: shared-desktop-ontologies
+  repo-type: git
+  repo-url: git://oscaf.git.sourceforge.net/gitroot/oscaf/shared-desktop-ontologies
 
+- name: automoc
+  repo-type: kdegit
+
+- name: cagibi
+  repo-type: kdegit
+
+- name: attica
+  repo-type: kdegit
+
+- name: soprano
+  repo-type: kdegit
+
+- name: polkit-qt-1
+  repo-type: kdegit
+
+# Platform
+- name: kdelibs
+  repo-type: kdegit
+
+- name: kdepimlibs
+  repo-type: kdegit
+
+- name: kde-runtime
+  repo-type: kdegit
+
+# Workspace
+- name: kde-workspace
+  repo-type: kdegit
+
+- name: libmm-qt
+  repo-type: kdegit
+
+- name: libnm-qt
+  repo-type: kdegit
+
+- name: networkmanagement
+  repo-type: kdegit
+
+# Apps
+- name: kde-baseapps
+  repo-type: kdegit
+
+- name: konsole
+  repo-type: kdegit
+
+# Graphics
 - name: libkipi
   repo-type: kdegit
 
@@ -19,12 +67,3 @@ modules:
 - name: gwenview
   repo-type: kdegit
   configure-options: -DJCONFIG_H=/usr/include/x86_64-linux-gnu/jconfig.h
-
-- name: libmm-qt
-  repo-type: kdegit
-
-- name: libnm-qt
-  repo-type: kdegit
-
-- name: networkmanagement
-  repo-type: kdegit
