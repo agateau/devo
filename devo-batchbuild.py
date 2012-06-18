@@ -21,6 +21,10 @@ def main():
                       action="store_true", dest="verbose", default=False,
                       help="Print command output to stdout")
 
+    parser.add_option("--resume-from", dest="resume_from", default=None,
+                      metavar="MODULE",
+                      help="Resume build from MODULE")
+
     (options, args) = parser.parse_args()
     logging.basicConfig(format="devo-batchbuild: %(asctime)s %(message)s", level=logging.DEBUG)
 
@@ -49,6 +53,19 @@ def main():
         if len(module_names) > 0:
             logging.error("Unknown modules: %s", ", ".join(module_names))
             return 1
+    elif options.resume_from is not None:
+        module_configs = []
+        found = False
+        for module_config in config["modules"]:
+            if not found:
+                name = module_config["name"]
+                if name == options.resume_from:
+                    found = True
+                    module_configs.append(module_config)
+            else:
+                module_configs.append(module_config)
+        if not found:
+            logging.error("Unknown module %s" % options.resume_from)
     else:
         module_configs = config["modules"]
 
