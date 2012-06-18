@@ -32,6 +32,9 @@ modules:
   repo-type: bzr
   repo-url: lp:libdbusmenu-qt
 
+- name: akonadi
+  repo-type: kdegit
+
 - name: kdelibs
   repo-type: kdegit
 
@@ -39,6 +42,9 @@ modules:
   repo-type: kdegit
 
 - name: kde-runtime
+  repo-type: kdegit
+
+- name: kactivities
   repo-type: kdegit
 
 # Workspace
