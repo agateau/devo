@@ -24,6 +24,9 @@ modules:
 - name: polkit-qt-1
   repo-type: kdegit
 
+- name: phonon
+  repo-type: kdegit
+
 # Platform
 - name: libdbusmenu-qt
   repo-type: bzr
