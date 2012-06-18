@@ -1,0 +1,2 @@
+class BatchBuildError(Exception):
+    pass

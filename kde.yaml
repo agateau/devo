@@ -1,0 +1,30 @@
+global:
+  base-dir: ~/kdesrc
+  configure-options: -DCMAKE_BUILD_TYPE=DebugFull
+  build-options: -j2
+
+modules:
+#- repo-type: git
+#  repo-url: kde:kdelibs
+
+- name: libkipi
+  repo-type: kdegit
+
+- name: libkdcraw
+  repo-type: kdegit
+
+- name: libkexiv2
+  repo-type: kdegit
+
+- name: gwenview
+  repo-type: kdegit
+  configure-options: -DJCONFIG_H=/usr/include/x86_64-linux-gnu/jconfig.h
+
+- name: libmm-qt
+  repo-type: kdegit
+
+- name: libnm-qt
+  repo-type: kdegit
+
+- name: networkmanagement
+  repo-type: kdegit
