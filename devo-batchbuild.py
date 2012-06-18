@@ -76,7 +76,9 @@ def main():
 
     fails = []
     for module_config in module_configs:
-        log_file_name = os.path.join(log_dir, module_config["name"] + ".log")
+        name = module_config["name"]
+        logging.info("### %s" % name)
+        log_file_name = os.path.join(log_dir, name + ".log")
         log_file = open(log_file_name, "w")
         runner = Runner(log_file, options.verbose)
         module = Module(config["global"], module_config, runner)
@@ -89,8 +91,8 @@ def main():
             module.build()
             module.install()
         except BatchBuildError, exc:
-            logging.error("%s failed to build: %s", module_config["name"], exc)
-            fails.append([module_config["name"], str(exc), log_file_name])
+            logging.error("%s failed to build: %s", name, exc)
+            fails.append([name, str(exc), log_file_name])
 
     if len(fails) > 0:
         logging.info("%d modules failed to build:", len(fails))
