@@ -21,19 +21,25 @@ class Module(object):
             url = self.config["repo-url"]
 
         if repo_type == "svn":
-            self.runner.run(self.base_dir, "svn checkout %s %s" % (url, self.name))
+            cmd = "svn checkout %s %s" % (url, self.name)
         elif repo_type == "git":
-            self.runner.run(self.base_dir, "git clone %s %s" % (url, self.name))
+            cmd = "git clone %s %s" % (url, self.name)
         elif repo_type == "kdegit":
-            self.runner.run(self.base_dir, "git clone kde:%s %s" % (self.name, self.name))
+            cmd = "git clone kde:%s %s" % (self.name, self.name)
+        elif repo_type == "bzr":
+            cmd = "bzr branch %s %s" % (url, self.name)
+        self.runner.run(self.base_dir, cmd)
 
     def update(self):
         repo_type = self.config["repo-type"]
 
         if repo_type == "svn":
-            self.runner.run(self.src_dir, "svn update")
+            cmd = "svn update"
         elif repo_type in ("git", "kdegit"):
-            self.runner.run(self.src_dir, "git pull")
+            cmd = "git pull"
+        elif repo_type == "bzr":
+            cmd = "bzr pull"
+        self.runner.run(self.src_dir, cmd)
 
     def configure(self):
         if not os.path.exists(self.build_dir):
