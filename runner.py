@@ -13,13 +13,9 @@ class Runner(object):
         logging.info(msg)
         print >>self.log_file, "devo-batchbuild: " + msg
 
-    def cd(self, name):
-        self._info_log("Entering dir '%s'" % name)
-        os.chdir(name)
-
-    def run(self, command):
-        self._info_log("Running command '%s'" % command)
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+    def run(self, cwd, command):
+        self._info_log("Running command '%s' in dir '%s'" % (command, cwd))
+        process = subprocess.Popen(command, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
         while True:
             out = process.stdout.readline()
             self.log_file.write(out)
