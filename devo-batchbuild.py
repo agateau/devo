@@ -15,6 +15,14 @@ USAGE="%prog <project.yaml> [module1 [module2...]]"
 def list_auto_modules(modules):
     return [x for x in modules if x.get("auto", True)]
 
+def find_config(name):
+    devo_bbconfig_dir = os.path.expanduser("~/.config/devo/bb")
+    full_name = os.path.join(devo_bbconfig_dir, name)
+    for x in name, full_name, full_name + ".yaml":
+        if os.path.exists(x):
+            return x
+    return None
+
 def main():
     parser = OptionParser(usage=USAGE)
 
@@ -47,7 +55,10 @@ def main():
     # Load config
     if len(args) == 0:
         parser.error("Missing args")
-    config = yaml.load(open(args[0]))
+    config_file_name = find_config(args[0])
+    if config_file_name is None:
+        parser.error("Could not find '%s' config file" % args[0])
+    config = yaml.load(open(config_file_name))
     base_dir = os.path.expanduser(config["global"]["base-dir"])
 
     # Select modules to build
