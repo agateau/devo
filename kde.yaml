@@ -37,6 +37,9 @@ modules:
 - name: phonon
   repo-type: kdegit
 
+- name: phonon-gstreamer
+  repo-type: kdegit
+
 # Platform
 - name: libdbusmenu-qt
   repo-type: bzr
