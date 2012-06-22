@@ -73,6 +73,12 @@ modules:
 - name: networkmanagement
   repo-type: kdegit
 
+- name: kmix
+  repo-type: kdegit
+
+- name: kdeplasma-addons
+  repo-type: kdegit
+
 # Apps
 - name: kde-baseapps
   repo-type: kdegit
@@ -80,31 +86,10 @@ modules:
 - name: konsole
   repo-type: kdegit
 
-# Graphics
-- name: libkipi
+- name: kate
   repo-type: kdegit
 
-- name: libkdcraw
-  repo-type: kdegit
-
-- name: libkexiv2
-  repo-type: kdegit
-
-- name: gwenview
-  repo-type: kdegit
-  configure-options: -DJCONFIG_H=/usr/include/x86_64-linux-gnu/jconfig.h
-
-- name: kipi-plugins
-  repo-type: kdegit
-
-- name: okular
-  repo-type: kdegit
-
-# KDevelop
-- name: kdevplatform
-  repo-type: kdegit
-  auto: false
-
-- name: kdevelop
+# Active
+- name: plasma-mobile
   repo-type: kdegit
   auto: false
