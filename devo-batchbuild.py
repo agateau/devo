@@ -6,6 +6,8 @@ from optparse import OptionParser
 
 import yaml
 
+import nanotify
+
 from batchbuilderror import BatchBuildError
 from module import Module
 from runner import Runner
@@ -117,9 +119,11 @@ def main():
             module.configure()
             module.build()
             module.install()
+            nanotify.notify(name, "Build successfully", icon="dialog-ok")
         except BatchBuildError, exc:
             logging.error("%s failed to build: %s", name, exc)
             fails.append([name, str(exc), log_file_name])
+            nanotify.notify(name, "Failed to build", icon="dialog-error")
 
     if len(fails) > 0:
         logging.info("%d modules failed to build:", len(fails))
