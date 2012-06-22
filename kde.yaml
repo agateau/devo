@@ -5,6 +5,13 @@ global:
 
 modules:
 # "support"
+- name: iodbc
+  repo-type: git
+  repo-url: git://github.com/openlink/iODBC.git
+  # Bug: need to run bootstrap.sh in source dir
+  configure: ~/kdesrc/iodbc/configure
+  configure-options: --prefix=$DEVO_PREFIX --disable-gui
+
 - name: shared-desktop-ontologies
   repo-type: git
   repo-url: git://oscaf.git.sourceforge.net/gitroot/oscaf/shared-desktop-ontologies
@@ -39,6 +46,9 @@ modules:
   repo-type: kdegit
 
 - name: kdelibs
+  repo-type: kdegit
+
+- name: nepomuk-core
   repo-type: kdegit
 
 - name: kdepimlibs
