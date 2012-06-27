@@ -1,5 +1,6 @@
 import logging
 import subprocess
+import sys
 
 from batchbuilderror import BatchBuildError
 
@@ -20,7 +21,8 @@ class Runner(object):
             self.log_file.write(out)
             self.log_file.flush()
             if self.verbose:
-                print self.log_file
+                sys.stdout.write(out)
+                sys.stdout.flush()
             process.poll()
             ret = process.returncode
             if ret is not None:
