@@ -40,6 +40,10 @@ def main():
                       action="store_true", dest="no_src", default=False,
                       help="Do not update source code")
 
+    parser.add_option("--src-only",
+                      action="store_true", dest="src_only", default=False,
+                      help="Only update source code")
+
     parser.add_option("--resume-from", dest="resume_from", default=None,
                       metavar="MODULE",
                       help="Resume build from MODULE")
@@ -116,10 +120,11 @@ def main():
                     module.update()
                 else:
                     module.checkout()
-            module.configure()
-            module.build()
-            module.install()
-            nanotify.notify(name, "Build successfully", icon="dialog-ok")
+            if not options.src_only:
+                module.configure()
+                module.build()
+                module.install()
+                nanotify.notify(name, "Build successfully", icon="dialog-ok")
         except BatchBuildError, exc:
             logging.error("%s failed to build: %s", name, exc)
             fails.append([name, str(exc), log_file_name])
