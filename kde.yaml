@@ -41,6 +41,7 @@ modules:
 - name: akonadi
 
 - name: kdelibs
+  branch: KDE/4.8
 
 - name: nepomuk-core
 
