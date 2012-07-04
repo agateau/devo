@@ -2,6 +2,7 @@ global:
   base-dir: ~/kdesrc
   configure-options: -DCMAKE_BUILD_TYPE=DebugFull
   build-options: -j2
+  repo-type: kdegit
 
 modules:
 # "support"
@@ -17,28 +18,20 @@ modules:
   repo-url: git://oscaf.git.sourceforge.net/gitroot/oscaf/shared-desktop-ontologies
 
 - name: automoc
-  repo-type: kdegit
 
 - name: cagibi
-  repo-type: kdegit
 
 - name: attica
-  repo-type: kdegit
 
 - name: soprano
-  repo-type: kdegit
 
 - name: strigi
-  repo-type: kdegit
 
 - name: polkit-qt-1
-  repo-type: kdegit
 
 - name: phonon
-  repo-type: kdegit
 
 - name: phonon-gstreamer
-  repo-type: kdegit
 
 # Platform
 - name: libdbusmenu-qt
@@ -46,53 +39,37 @@ modules:
   repo-url: lp:libdbusmenu-qt
 
 - name: akonadi
-  repo-type: kdegit
 
 - name: kdelibs
-  repo-type: kdegit
 
 - name: nepomuk-core
-  repo-type: kdegit
 
 - name: kdepimlibs
-  repo-type: kdegit
 
 - name: kde-runtime
-  repo-type: kdegit
 
 - name: kactivities
-  repo-type: kdegit
 
 # Workspace
 - name: kde-workspace
-  repo-type: kdegit
 
 - name: libmm-qt
-  repo-type: kdegit
 
 - name: libnm-qt
-  repo-type: kdegit
 
 - name: networkmanagement
-  repo-type: kdegit
 
 - name: kmix
-  repo-type: kdegit
 
 - name: kdeplasma-addons
-  repo-type: kdegit
 
 # Apps
 - name: kde-baseapps
-  repo-type: kdegit
 
 - name: konsole
-  repo-type: kdegit
 
 - name: kate
-  repo-type: kdegit
 
 # Active
 - name: plasma-mobile
-  repo-type: kdegit
   auto: false
