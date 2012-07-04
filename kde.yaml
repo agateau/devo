@@ -26,6 +26,7 @@ modules:
 - name: soprano
 
 - name: strigi
+  # Bug: strigi needs submodules support
 
 - name: polkit-qt-1
 
