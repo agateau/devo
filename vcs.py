@@ -3,10 +3,7 @@ class Svn(object):
         self.module = module
 
     def checkout(self):
-        url = self.module.url
-        if url[-1] != "/":
-            url += "/"
-        cmd = "svn checkout %s %s" % (url + self.module.branch, self.module.name)
+        cmd = "svn checkout %s %s" % (self.module.url, self.module.name)
         self.module.runner.run(self.module.base_dir, cmd)
 
     def update(self):
