@@ -19,8 +19,6 @@ class Module(object):
         assert repo_type != ""
 
         self.branch = self._get_opt("branch", "")
-        if self.branch == "":
-            self.branch = "trunk" if repo_type == "svn" else "master"
 
         self.url = self._get_opt("repo-url", "")
         if repo_type == "svn":
