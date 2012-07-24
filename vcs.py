@@ -13,9 +13,16 @@ class Svn(object):
 class Git(object):
     def __init__(self, module):
         self.module = module
+        self.url = self.module.url
+        self.branch = module.branch
+        if self.branch == "":
+            self.branch = "master"
 
     def checkout(self):
-        cmd = "git clone %s %s" % (self.module.url, self.module.name)
+        cmd = "git clone"
+        if self.branch != "master":
+            cmd += " --branch " + self.branch
+        cmd += " %s %s" % (self.url, self.module.name)
         self.module.runner.run(self.module.base_dir, cmd)
 
     def update(self):
@@ -23,9 +30,9 @@ class Git(object):
 
 
 class KdeGit(Git):
-    def checkout(self):
-        cmd = "git clone kde:%s %s" % (self.module.name, self.module.name)
-        self.module.runner.run(self.module.base_dir, cmd)
+    def __init__(self, module):
+        Git.__init__(self, module)
+        self.url = "kde:" + module.name
 
 
 class Bzr(object):

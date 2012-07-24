@@ -31,6 +31,7 @@ Available options:
   within `global/base-dir`.
 - repo-type: Can be "git", "svn" or "kdegit".
 - repo-url: Url of the repository.
+- branch: Branch to checkout (git only).
 - configure: Command to run to configure the source. Defaults to "devo-cmake".
 - configure-options: Options to pass to the `configure` command.
 - build: Command to run to build the source. Defaults to "make".
