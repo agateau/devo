@@ -17,6 +17,10 @@ modules:
   repo-type: git
   repo-url: git://oscaf.git.sourceforge.net/gitroot/oscaf/shared-desktop-ontologies
 
+- name: oxygen-icons
+  repo-type: svn
+  repo-url: svn://anonsvn.kde.org/home/kde/trunk/kdesupport/oxygen-icons
+
 - name: automoc
 
 - name: cagibi
