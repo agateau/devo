@@ -52,9 +52,9 @@ modules:
 
 - name: kdepimlibs
 
-- name: kde-runtime
-
 - name: kactivities
+
+- name: kde-runtime
 
 # Workspace
 - name: kde-workspace
@@ -67,9 +67,15 @@ modules:
 
 - name: kmix
 
+- name: libkexiv2
+
+- name: qjson
+
 - name: kdeplasma-addons
 
 # Apps
+- name: kwebkitpart
+
 - name: kde-baseapps
 
 - name: konsole
