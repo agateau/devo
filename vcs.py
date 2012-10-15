@@ -45,3 +45,15 @@ class Bzr(object):
 
     def update(self):
         self.module.runner.run(self.module.src_dir, "bzr up")
+
+
+class Hg(object):
+    def __init__(self, module):
+        self.module = module
+
+    def checkout(self):
+        cmd = "hg clone %s %s" % (self.module.url, self.module.name)
+        self.module.runner.run(self.module.base_dir, cmd)
+
+    def update(self):
+        self.module.runner.run(self.module.src_dir, "hg pull")

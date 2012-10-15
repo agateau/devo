@@ -29,6 +29,8 @@ class Module(object):
             self.vcs = vcs.KdeGit(self)
         elif repo_type == "bzr":
             self.vcs = vcs.Bzr(self)
+        elif repo_type == "hg":
+            self.vcs = vcs.Hg(self)
         else:
             raise Exception("Unknown repo-type: %s" % repo_type)
 
