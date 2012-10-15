@@ -41,7 +41,7 @@ class Bzr(object):
 
     def checkout(self):
         cmd = "bzr branch %s %s" % (self.module.url, self.module.name)
-        self.module.runner.run(self.module.src_dir, cmd)
+        self.module.runner.run(self.module.base_dir, cmd)
 
     def update(self):
         self.module.runner.run(self.module.src_dir, "bzr up")
