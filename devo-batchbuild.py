@@ -12,7 +12,7 @@ from batchbuilderror import BatchBuildError
 from module import Module
 from runner import Runner
 
-USAGE="%prog <project.yaml> [module1 [module2...]]"
+USAGE = "%prog <project.yaml|module> [module1 [module2...]]"
 
 BBCONFIG_DIR = os.path.expanduser("~/.config/devo/bb")
 
@@ -40,6 +40,14 @@ def find_config(name):
     for x in name, full_name, full_name + ".yaml":
         if os.path.exists(x):
             return x
+    return None
+
+
+def find_config_containing(name):
+    dct = list_all_modules()
+    for key, lst in dct.items():
+        if name in lst:
+            return os.path.join(BBCONFIG_DIR, key)
     return None
 
 
@@ -142,15 +150,26 @@ def main():
     # Load config
     if len(args) == 0:
         parser.error("Missing args")
-    config_file_name = find_config(args[0])
-    if config_file_name is None:
-        parser.error("Could not find '%s' config file" % args[0])
+
+    if args[0].endswith(".yaml"):
+        config_file_name = find_config(args[0])
+        if config_file_name is None:
+            logging.error("Could not find '%s' config file" % args[0])
+            return 1
+        module_names = set(args[1:])
+    else:
+        config_file_name = find_config_containing(args[0])
+        if config_file_name is None:
+            logging.error("Could not find any config file containing '%s'" % args[0])
+            return 1
+        logging.info("Using config '%s'" % config_file_name)
+        module_names = set([args[0]])
+
     config = yaml.load(open(config_file_name))
     base_dir = os.path.expanduser(config["global"]["base-dir"])
 
     # Select modules to build
-    if len(args) > 1:
-        module_names = set(args[1:])
+    if len(module_names) > 0:
         module_configs = []
         for module_config in config["modules"]:
             name = module_config["name"]
