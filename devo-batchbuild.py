@@ -55,6 +55,36 @@ def print_project_modules(lst):
         print "- %s" % name
 
 
+def do_build(config, module_configs, log_dir, options):
+    fails = []
+    for module_config in module_configs:
+        name = module_config["name"]
+        logging.info("### %s" % name)
+        log_file_name = os.path.join(log_dir, name + ".log")
+        log_file = open(log_file_name, "w")
+        runner = Runner(log_file, options.verbose)
+        module = Module(config["global"], module_config, runner)
+        try:
+            if not options.no_src:
+                if module.has_checkout():
+                    module.update()
+                else:
+                    module.checkout()
+            if not options.src_only:
+                if options.refresh_build:
+                    module.refresh_build()
+                module.configure()
+                module.build()
+                module.install()
+                nanotify.notify(name, "Build successfully", icon="dialog-ok")
+        except BatchBuildError, exc:
+            logging.error("%s failed to build: %s", name, exc)
+            logging.error("See %s", log_file_name)
+            fails.append([name, str(exc), log_file_name])
+            nanotify.notify(name, "Failed to build", icon="dialog-error")
+    return fails
+
+
 def main():
     parser = OptionParser(usage=USAGE)
 
@@ -157,36 +187,13 @@ def main():
             print "- " + module_config["name"]
         return 0
 
-    fails = []
-    for module_config in module_configs:
-        name = module_config["name"]
-        logging.info("### %s" % name)
-        log_file_name = os.path.join(log_dir, name + ".log")
-        log_file = open(log_file_name, "w")
-        runner = Runner(log_file, options.verbose)
-        module = Module(config["global"], module_config, runner)
-        try:
-            if not options.no_src:
-                if module.has_checkout():
-                    module.update()
-                else:
-                    module.checkout()
-            if not options.src_only:
-                if options.refresh_build:
-                    module.refresh_build()
-                module.configure()
-                module.build()
-                module.install()
-                nanotify.notify(name, "Build successfully", icon="dialog-ok")
-        except BatchBuildError, exc:
-            logging.error("%s failed to build: %s", name, exc)
-            fails.append([name, str(exc), log_file_name])
-            nanotify.notify(name, "Failed to build", icon="dialog-error")
+    fails = do_build(config, module_configs, log_dir, options)
 
     if len(fails) > 0:
-        logging.info("%d modules failed to build:", len(fails))
+        logging.error("%d modules failed to build:", len(fails))
         for name, msg, log_file_name in fails:
-            logging.info("- %s: %s, see %s", name, msg, log_file_name)
+            logging.error("- %s: %s", name, msg)
+            logging.error("- %s: see %s", name, log_file_name)
     else:
         logging.info("All modules built successfully")
 
