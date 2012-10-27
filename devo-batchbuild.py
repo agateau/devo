@@ -14,16 +14,46 @@ from runner import Runner
 
 USAGE="%prog <project.yaml> [module1 [module2...]]"
 
+BBCONFIG_DIR = os.path.expanduser("~/.config/devo/bb")
+
+
 def list_auto_modules(modules):
     return [x for x in modules if x.get("auto", True)]
 
+
+def list_all_modules():
+    """
+    Returns a dict project => [module1, module2,...]
+    """
+    dct = {}
+    for name in os.listdir(BBCONFIG_DIR):
+        if not name.endswith(".yaml"):
+            continue
+        full_name = os.path.join(BBCONFIG_DIR, name)
+        config = yaml.load(open(full_name))
+        dct[name] = [x["name"] for x in config["modules"]]
+    return dct
+
+
 def find_config(name):
-    devo_bbconfig_dir = os.path.expanduser("~/.config/devo/bb")
-    full_name = os.path.join(devo_bbconfig_dir, name)
+    full_name = os.path.join(BBCONFIG_DIR, name)
     for x in name, full_name, full_name + ".yaml":
         if os.path.exists(x):
             return x
     return None
+
+
+def print_all_project_modules():
+    dct = list_all_modules()
+    for name in sorted(dct.keys()):
+        print name
+        print_project_modules(dct[name])
+
+
+def print_project_modules(lst):
+    for name in lst:
+        print "- %s" % name
+
 
 def main():
     parser = OptionParser(usage=USAGE)
@@ -52,8 +82,25 @@ def main():
                       action="store_true", dest="refresh_build", default=False,
                       help="Delete build dir")
 
+    parser.add_option("-l", "--list",
+                      action="store_true", dest="list", default=False,
+                      help="List available modules")
+
     (options, args) = parser.parse_args()
     logging.basicConfig(format="%(asctime)s %(message)s", datefmt="%H:%M:%S", level=logging.DEBUG)
+
+    if options.list:
+        if len(args) > 0:
+            dct = list_all_modules()
+            name = args[0]
+            lst = dct.get(name, None)
+            if lst is None:
+                logging.error("No module named %s" % name)
+                return 1
+            print_project_modules(lst)
+        else:
+            print_all_project_modules()
+        return 0
 
     # Check devo name
     devo_name = os.environ.get("DEVO_NAME", None)
