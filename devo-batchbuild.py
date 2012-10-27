@@ -48,6 +48,10 @@ def main():
                       metavar="MODULE",
                       help="Resume build from MODULE")
 
+    parser.add_option("--refresh-build",
+                      action="store_true", dest="refresh_build", default=False,
+                      help="Delete build dir")
+
     (options, args) = parser.parse_args()
     logging.basicConfig(format="%(asctime)s %(message)s", datefmt="%H:%M:%S", level=logging.DEBUG)
 
@@ -121,6 +125,8 @@ def main():
                 else:
                     module.checkout()
             if not options.src_only:
+                if options.refresh_build:
+                    module.refresh_build()
                 module.configure()
                 module.build()
                 module.install()

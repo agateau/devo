@@ -1,4 +1,6 @@
+import logging
 import os
+import shutil
 
 import vcs
 
@@ -42,6 +44,11 @@ class Module(object):
 
     def update(self):
         self.vcs.update()
+
+    def refresh_build(self):
+        if os.path.exists(self.build_dir):
+            logging.info("Removing dir '%s'" % self.build_dir)
+            shutil.rmtree(self.build_dir)
 
     def configure(self):
         if not os.path.exists(self.build_dir):
