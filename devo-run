@@ -1,10 +1,14 @@
 #!/bin/sh
 set -e
 
-OVERLAY_DIR=$HOME/.config/devo
+oldpwd=$PWD
+cd $(dirname $(readlink $0))
+echo $PWD
+. ./devo-setup.source
+cd $oldpwd
 
-overlay=$1
+prefix=$1
 shift
-. $OVERLAY_DIR/$overlay
+. $DEVO_OVERLAY_DIR/$prefix
 
 exec $*

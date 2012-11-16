@@ -3,6 +3,8 @@
 # It exposes one "public" function: devo-setup and a few others "private"
 # functions to be used in overlay definitions.
 
+DEVO_OVERLAY_DIR=$HOME/.config/devo
+
 # Prepend $1 to common environment variables
 _devo_prepend_prefix() {
     local prefix=$1
@@ -14,8 +16,8 @@ _devo_prepend_prefix() {
 }
 
 
-devo-setup() {
+devo_setup() {
     local prefix=$1
-    . ~/.config/devo/$prefix
+    . $DEVO_OVERLAY_DIR/$prefix
     rehash
 }
