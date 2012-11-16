@@ -65,8 +65,8 @@ class Module(object):
         self.runner.run(self.build_dir, build + " " + build_opts)
 
     def install(self):
-        install = self._get_opt("install", "make")
-        install_opts = self._get_opt("install-options", "install")
+        install = self._get_opt("install", "make install")
+        install_opts = self._get_opt("install-options", "")
         self.runner.run(self.build_dir, install + " " + install_opts)
 
     def _get_opt(self, key, default_value):
