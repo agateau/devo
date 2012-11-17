@@ -8,6 +8,6 @@ cd $oldpwd
 
 prefix=$1
 shift
-. $DEVO_OVERLAY_DIR/$prefix
+devo_setup $prefix
 
 exec $*
