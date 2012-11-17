@@ -1,0 +1,14 @@
+# Utility functions for devo shell scripts
+
+die() {
+    echo "ERROR: $*" 1>&2
+    exit 1
+}
+
+checkvar() {
+    local name
+    name=$1
+    if ! env | grep -q "^$name=" ; then
+        die "'$name' environment variable is not set"
+    fi
+}
