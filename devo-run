@@ -3,7 +3,6 @@ set -e
 
 oldpwd=$PWD
 cd $(dirname $(readlink $0))
-echo $PWD
 . ./devo-setup.source
 cd $oldpwd
 
