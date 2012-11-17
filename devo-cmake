@@ -1,8 +1,6 @@
 #!/bin/sh
 set -e
 
-OVERLAY_DIR=$HOME/.config/devo
-
 die() {
     echo "ERROR: $*" 1>&2
     exit 1
