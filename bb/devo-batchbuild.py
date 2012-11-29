@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import itertools
 import logging
 import os
 import sys
@@ -15,10 +16,6 @@ from runner import Runner
 USAGE = "%prog <project.yaml|module> [module1 [module2...]]"
 
 BBCONFIG_DIR = os.path.expanduser("~/.config/devo/bb")
-
-
-def list_auto_modules(modules):
-    return [x for x in modules if x.get("auto", True)]
 
 
 def list_all_modules():
@@ -67,6 +64,35 @@ def print_all_project_modules():
 def print_project_modules(lst):
     for name in lst:
         print "- %s" % name
+
+
+def select_module_configs(config, module_names, resume_from):
+    """
+    Returns a list of module configs from config which match
+    module_names or resume_from
+    """
+    if len(module_names) > 0:
+        module_configs = []
+        for module_config in config["modules"]:
+            name = module_config["name"]
+            if name in module_names:
+                module_configs.append(module_config)
+                module_names.remove(name)
+        if len(module_names) > 0:
+            logging.error("Unknown modules: %s", ", ".join(module_names))
+            return None
+        return module_configs
+
+    auto_module_configs = [x for x in config["modules"] if x.get("auto", True)]
+
+    if resume_from is not None:
+        module_configs = list(itertools.dropwhile(lambda x: x["name"] != resume_from, auto_module_configs))
+        if len(module_configs) == 0:
+            logging.error("Unknown module %s" % resume_from)
+            return None
+        return module_configs
+
+    return auto_module_configs
 
 
 def do_build(config, module_configs, log_dir, options):
@@ -173,32 +199,9 @@ def main():
 
     config = yaml.load(open(config_file_name))
 
-    # Select modules to build
-    if len(module_names) > 0:
-        module_configs = []
-        for module_config in config["modules"]:
-            name = module_config["name"]
-            if name in module_names:
-                module_configs.append(module_config)
-                module_names.remove(name)
-        if len(module_names) > 0:
-            logging.error("Unknown modules: %s", ", ".join(module_names))
-            return 1
-    elif options.resume_from is not None:
-        module_configs = []
-        found = False
-        for module_config in list_auto_modules(config["modules"]):
-            if not found:
-                name = module_config["name"]
-                if name == options.resume_from:
-                    found = True
-                    module_configs.append(module_config)
-            else:
-                module_configs.append(module_config)
-        if not found:
-            logging.error("Unknown module %s" % options.resume_from)
-    else:
-        module_configs = list_auto_modules(config["modules"])
+    module_configs = select_module_configs(config, module_names, options.resume_from)
+    if module_configs is None:
+        return 1
 
     # Setup logging
     log_dir = os.path.join(os.environ["DEVO_BUILD_BASE_DIR"], "log")
