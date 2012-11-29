@@ -10,6 +10,7 @@ import yaml
 import nanotify
 
 from batchbuilderror import BatchBuildError
+from cascadedconfig import CascadedConfig
 from module import Module
 from runner import Runner
 
@@ -95,7 +96,7 @@ def select_module_configs(config, module_names, resume_from):
     return auto_module_configs
 
 
-def do_build(config, module_configs, log_dir, options):
+def do_build(global_config_dict, module_configs, log_dir, options):
     fails = []
     for module_config in module_configs:
         name = module_config["name"]
@@ -103,7 +104,8 @@ def do_build(config, module_configs, log_dir, options):
         log_file_name = os.path.join(log_dir, name + ".log")
         log_file = open(log_file_name, "w")
         runner = Runner(log_file, options.verbose)
-        module = Module(config["global"], module_config, runner)
+        config = CascadedConfig(module_config, global_config_dict)
+        module = Module(config, runner)
         try:
             if not options.no_src:
                 if module.has_checkout():
@@ -214,7 +216,7 @@ def main():
             print "- " + module_config["name"]
         return 0
 
-    fails = do_build(config, module_configs, log_dir, options)
+    fails = do_build(config["global"], module_configs, log_dir, options)
 
     if len(fails) > 0:
         logging.error("%d modules failed to build:", len(fails))

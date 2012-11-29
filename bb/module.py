@@ -3,13 +3,11 @@ import os
 import shutil
 
 import vcs
-from cascadedconfig import CascadedConfig
 
 class Module(object):
-    def __init__(self, global_config, config, runner):
+    def __init__(self, config, runner):
+        self.config = config
         self.runner = runner
-
-        self.config = CascadedConfig(config, global_config)
         self.name = self.config.flat_get("name")
         assert self.name is not None
 
