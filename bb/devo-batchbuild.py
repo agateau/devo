@@ -33,6 +33,19 @@ def list_all_modules():
     return dct
 
 
+def load_all_config_dicts():
+    """
+    Returns a list of all config dicts
+    """
+    lst = []
+    for name in os.listdir(BBCONFIG_DIR):
+        if not name.endswith(".yaml"):
+            continue
+        full_name = os.path.join(BBCONFIG_DIR, name)
+        lst.append(yaml.load(open(full_name)))
+    return lst
+
+
 def find_config(name):
     """
     Returns full path of config named name, or None
@@ -67,33 +80,50 @@ def print_project_modules(lst):
         print "- %s" % name
 
 
-def select_module_config_dicts(config, module_names, resume_from):
-    """
-    Returns a list of module config dicts from config which match
-    module_names or resume_from
-    """
-    if len(module_names) > 0:
-        module_configs = []
-        for module_config in config["modules"]:
-            name = module_config["name"]
-            if name in module_names:
-                module_configs.append(module_config)
-                module_names.remove(name)
-        if len(module_names) > 0:
-            logging.error("Unknown modules: %s", ", ".join(module_names))
+def select_modules_from_config(name):
+    config_file_name = find_config(name)
+    if config_file_name is None:
+        logging.error("Could not find '%s' config file" % name)
+        return None
+    config = yaml.load(open(config_file_name))
+    global_dict = config["global"]
+    module_dicts = config["modules"]
+    return [CascadedConfig(x, global_dict) for x in module_dicts]
+
+
+def apply_resume_from(lst, resume_from):
+    lst = list(itertools.dropwhile(lambda x: x.flat_get("name") != resume_from, lst))
+    if len(lst) == 0:
+        logging.error("Unknown module %s" % resume_from)
+        return None
+    return lst
+
+
+def select_modules_from_list(module_names):
+    def find_module(lst, name):
+        for dct in lst:
+            if dct["name"] == name:
+                return dct
+        return None
+
+    config_dicts = load_all_config_dicts()
+
+    module_configs = []
+    for module_name in module_names:
+        found = False
+        for config_dict in config_dicts:
+            module_dict_list = config_dict["modules"]
+
+            dct = find_module(module_dict_list, module_name)
+            if dct is not None:
+                config = CascadedConfig(dct, config_dict["global"])
+                module_configs.append(config)
+                found = True
+                break
+        if not found:
+            logging.error("Unknown module %s" % module_name)
             return None
-        return module_configs
-
-    auto_module_configs = [x for x in config["modules"] if x.get("auto", True)]
-
-    if resume_from is not None:
-        module_configs = list(itertools.dropwhile(lambda x: x["name"] != resume_from, auto_module_configs))
-        if len(module_configs) == 0:
-            logging.error("Unknown module %s" % resume_from)
-            return None
-        return module_configs
-
-    return auto_module_configs
+    return module_configs
 
 
 def do_build(module_configs, log_dir, options):
@@ -186,25 +216,16 @@ def main():
         parser.error("Missing args")
 
     if args[0].endswith(".yaml"):
-        config_file_name = find_config(args[0])
-        if config_file_name is None:
-            logging.error("Could not find '%s' config file" % args[0])
-            return 1
-        module_names = set(args[1:])
+        module_configs = select_modules_from_config(args[0])
     else:
-        config_file_name = find_config_containing(args[0])
-        if config_file_name is None:
-            logging.error("Could not find any config file containing '%s'" % args[0])
-            return 1
-        logging.info("Using config '%s'" % config_file_name)
-        module_names = set([args[0]])
-
-    config = yaml.load(open(config_file_name))
-
-    module_config_dicts = select_module_config_dicts(config, module_names, options.resume_from)
-    if module_config_dicts is None:
+        module_configs = select_modules_from_list(args)
+    if module_configs is None:
         return 1
-    module_configs = [CascadedConfig(x, config["global"]) for x in module_config_dicts]
+
+    if options.resume_from:
+        module_configs = apply_resume_from(module_configs, options.resume_from)
+    if module_configs is None:
+        return 1
 
     # Setup logging
     log_dir = os.path.join(os.environ["DEVO_BUILD_BASE_DIR"], "log")
