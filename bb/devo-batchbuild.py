@@ -91,14 +91,6 @@ def select_modules_from_config(name):
     return [CascadedConfig(x, global_dict) for x in module_dicts]
 
 
-def apply_resume_from(lst, resume_from):
-    lst = list(itertools.dropwhile(lambda x: x.flat_get("name") != resume_from, lst))
-    if len(lst) == 0:
-        logging.error("Unknown module %s" % resume_from)
-        return None
-    return lst
-
-
 def select_modules_from_list(module_names):
     def find_module(lst, name):
         for dct in lst:
@@ -124,6 +116,14 @@ def select_modules_from_list(module_names):
             logging.error("Unknown module %s" % module_name)
             return None
     return module_configs
+
+
+def apply_resume_from(lst, resume_from):
+    lst = list(itertools.dropwhile(lambda x: x.flat_get("name") != resume_from, lst))
+    if len(lst) == 0:
+        logging.error("Unknown module %s" % resume_from)
+        return None
+    return lst
 
 
 def do_build(module_configs, log_dir, options):
