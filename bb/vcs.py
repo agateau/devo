@@ -26,7 +26,7 @@ class Git(object):
         self.module.runner.run(self.module.base_dir, cmd)
 
     def update(self):
-        self.module.runner.run(self.module.src_dir, "git pull")
+        self.module.runner.run(self.module.src_dir, "git pull --rebase")
 
 
 class KdeGit(Git):
