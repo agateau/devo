@@ -23,7 +23,7 @@ def list_auto_modules(modules):
 
 def list_all_modules():
     """
-    Returns a dict project => [module1, module2,...]
+    Returns a dict project => [module_name1, module_name2,...]
     """
     dct = {}
     for name in os.listdir(BBCONFIG_DIR):
@@ -36,6 +36,9 @@ def list_all_modules():
 
 
 def find_config(name):
+    """
+    Returns full path of config named name, or None
+    """
     full_name = os.path.join(BBCONFIG_DIR, name)
     for x in name, full_name, full_name + ".yaml":
         if os.path.exists(x):
@@ -44,6 +47,9 @@ def find_config(name):
 
 
 def find_config_containing(name):
+    """
+    Returns full path of first config containing a module named name, or None
+    """
     dct = list_all_modules()
     for key, lst in dct.items():
         if name in lst:
