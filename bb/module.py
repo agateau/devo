@@ -12,8 +12,7 @@ class Module(object):
         self.global_config = global_config
         self.config = config
 
-        self.base_dir = os.path.expanduser(global_config["base-dir"])
-        self.src_dir = os.path.join(self.base_dir, self.name)
+        self.src_dir = os.path.join(os.environ["DEVO_SOURCE_BASE_DIR"], self.name)
         self.build_dir = os.path.join(os.environ["DEVO_BUILD_BASE_DIR"], self.name)
 
         # Init repository stuff

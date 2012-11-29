@@ -28,7 +28,7 @@ Syntax:
 Available options:
 
 - name: Name of module, code for the module will be kept in a dir with this name
-  within `global/base-dir`.
+  within `$DEVO_SOURCE_BASE_DIR`.
 - repo-type: Can be "git", "svn" or "kdegit".
 - repo-url: Url of the repository.
 - branch: Branch to checkout (git only).

@@ -1,5 +1,4 @@
 global:
-  base-dir: ~/kdesrc
   configure-options: -DCMAKE_BUILD_TYPE=DebugFull
   build-options: -j2
   repo-type: kdegit
@@ -10,7 +9,7 @@ modules:
   repo-type: git
   repo-url: git://github.com/openlink/iODBC.git
   # Bug: need to run bootstrap.sh in source dir
-  configure: ~/kdesrc/iodbc/configure
+  configure: $DEVO_SOURCE_BASE_DIR/iodbc/configure
   configure-options: --prefix=$DEVO_PREFIX --disable-gui
 
 - name: shared-desktop-ontologies

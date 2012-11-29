@@ -166,7 +166,6 @@ def main():
         module_names = set([args[0]])
 
     config = yaml.load(open(config_file_name))
-    base_dir = os.path.expanduser(config["global"]["base-dir"])
 
     # Select modules to build
     if len(module_names) > 0:
@@ -196,7 +195,7 @@ def main():
         module_configs = list_auto_modules(config["modules"])
 
     # Setup logging
-    log_dir = os.path.join(base_dir, "log")
+    log_dir = os.path.join(os.environ["DEVO_BUILD_BASE_DIR"], "log")
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
 
