@@ -3,26 +3,27 @@ import os
 import shutil
 
 import vcs
+from cascadedconfig import CascadedConfig
 
 class Module(object):
     def __init__(self, global_config, config, runner):
-        self.name = config["name"]
         self.runner = runner
 
-        self.global_config = global_config
-        self.config = config
+        self.config = CascadedConfig(config, global_config)
+        self.name = self.config.flat_get("name")
+        assert self.name is not None
 
         self.base_dir = os.environ["DEVO_SOURCE_BASE_DIR"]
         self.src_dir = os.path.join(self.base_dir, self.name)
         self.build_dir = os.path.join(os.environ["DEVO_BUILD_BASE_DIR"], self.name)
 
         # Init repository stuff
-        repo_type = self._get_opt("repo-type", "")
-        assert repo_type != ""
+        repo_type = self.config.get("repo-type")
+        assert repo_type is not None
 
-        self.branch = self._get_opt("branch", "")
+        self.branch = self.config.get("branch", "")
 
-        self.url = self._get_opt("repo-url", "")
+        self.url = self.config.get("repo-url", "")
         if repo_type == "svn":
             self.vcs = vcs.Svn(self)
         elif repo_type == "git":
@@ -53,21 +54,18 @@ class Module(object):
     def configure(self):
         if not os.path.exists(self.build_dir):
             os.makedirs(self.build_dir)
-        configure = self._get_opt("configure", "devo-cmake " + self.src_dir)
-        configure_opts = self._get_opt("configure-options", "")
+        configure = self.config.get("configure", "devo-cmake " + self.src_dir)
+        configure_opts = self.config.get("configure-options", "")
         self.runner.run(self.build_dir, configure + " " + configure_opts)
 
     def build(self):
         if not os.path.exists(self.build_dir):
             self.configure()
-        build = self._get_opt("build", "make")
-        build_opts = self._get_opt("build-options", "")
+        build = self.config.get("build", "make")
+        build_opts = self.config.get("build-options", "")
         self.runner.run(self.build_dir, build + " " + build_opts)
 
     def install(self):
-        install = self._get_opt("install", "make install")
-        install_opts = self._get_opt("install-options", "")
+        install = self.config.get("install", "make install")
+        install_opts = self.config.get("install-options", "")
         self.runner.run(self.build_dir, install + " " + install_opts)
-
-    def _get_opt(self, key, default_value):
-        return self.config.get(key, self.global_config.get(key, default_value))
