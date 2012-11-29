@@ -67,9 +67,9 @@ def print_project_modules(lst):
         print "- %s" % name
 
 
-def select_module_configs(config, module_names, resume_from):
+def select_module_config_dicts(config, module_names, resume_from):
     """
-    Returns a list of module configs from config which match
+    Returns a list of module config dicts from config which match
     module_names or resume_from
     """
     if len(module_names) > 0:
@@ -96,15 +96,15 @@ def select_module_configs(config, module_names, resume_from):
     return auto_module_configs
 
 
-def do_build(global_config_dict, module_configs, log_dir, options):
+def do_build(module_configs, log_dir, options):
     fails = []
-    for module_config in module_configs:
-        name = module_config["name"]
+    for config in module_configs:
+        name = config.flat_get("name")
+        assert name
         logging.info("### %s" % name)
         log_file_name = os.path.join(log_dir, name + ".log")
         log_file = open(log_file_name, "w")
         runner = Runner(log_file, options.verbose)
-        config = CascadedConfig(module_config, global_config_dict)
         module = Module(config, runner)
         try:
             if not options.no_src:
@@ -201,9 +201,10 @@ def main():
 
     config = yaml.load(open(config_file_name))
 
-    module_configs = select_module_configs(config, module_names, options.resume_from)
-    if module_configs is None:
+    module_config_dicts = select_module_config_dicts(config, module_names, options.resume_from)
+    if module_config_dicts is None:
         return 1
+    module_configs = [CascadedConfig(x, config["global"]) for x in module_config_dicts]
 
     # Setup logging
     log_dir = os.path.join(os.environ["DEVO_BUILD_BASE_DIR"], "log")
@@ -213,10 +214,10 @@ def main():
     if options.dry_run:
         print "Would build:"
         for module_config in module_configs:
-            print "- " + module_config["name"]
+            print "- " + module_config.flat_get("name")
         return 0
 
-    fails = do_build(config["global"], module_configs, log_dir, options)
+    fails = do_build(module_configs, log_dir, options)
 
     if len(fails) > 0:
         logging.error("%d modules failed to build:", len(fails))
