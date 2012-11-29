@@ -19,20 +19,6 @@ USAGE = "%prog <project.yaml|module> [module1 [module2...]]"
 BBCONFIG_DIR = os.path.expanduser("~/.config/devo/bb")
 
 
-def list_all_modules():
-    """
-    Returns a dict project => [module_name1, module_name2,...]
-    """
-    dct = {}
-    for name in os.listdir(BBCONFIG_DIR):
-        if not name.endswith(".yaml"):
-            continue
-        full_name = os.path.join(BBCONFIG_DIR, name)
-        config = yaml.load(open(full_name))
-        dct[name] = [x["name"] for x in config["modules"]]
-    return dct
-
-
 def load_all_config_dicts():
     """
     Returns a list of all config dicts
@@ -46,46 +32,37 @@ def load_all_config_dicts():
     return lst
 
 
-def find_config(name):
+def load_config_dict_by_name(name):
     """
-    Returns full path of config named name, or None
+    Returns config dict for config named name, or None
     """
     full_name = os.path.join(BBCONFIG_DIR, name)
-    for x in name, full_name, full_name + ".yaml":
+    for x in name, full_name:
         if os.path.exists(x):
-            return x
-    return None
-
-
-def find_config_containing(name):
-    """
-    Returns full path of first config containing a module named name, or None
-    """
-    dct = list_all_modules()
-    for key, lst in dct.items():
-        if name in lst:
-            return os.path.join(BBCONFIG_DIR, key)
+            return yaml.load(open(x))
     return None
 
 
 def print_all_project_modules():
-    dct = list_all_modules()
-    for name in sorted(dct.keys()):
+    for name in sorted(os.listdir(BBCONFIG_DIR)):
+        if not name.endswith(".yaml"):
+            continue
+        full_name = os.path.join(BBCONFIG_DIR, name)
+        config = yaml.load(open(full_name))
         print name
-        print_project_modules(dct[name])
+        print_project_modules(config)
 
 
-def print_project_modules(lst):
-    for name in lst:
-        print "- %s" % name
+def print_project_modules(config):
+    for dct in config["modules"]:
+        print "- %s" % dct["name"]
 
 
 def select_modules_from_config(name):
-    config_file_name = find_config(name)
-    if config_file_name is None:
+    config = load_config_dict_by_name(name)
+    if not config:
         logging.error("Could not find '%s' config file" % name)
         return None
-    config = yaml.load(open(config_file_name))
     global_dict = config["global"]
     module_dicts = config["modules"]
     return [CascadedConfig(x, global_dict) for x in module_dicts]
@@ -193,13 +170,12 @@ def main():
 
     if options.list:
         if len(args) > 0:
-            dct = list_all_modules()
             name = args[0]
-            lst = dct.get(name, None)
-            if lst is None:
-                logging.error("No module named %s" % name)
+            config = load_config_dict_by_name(name)
+            if not config:
+                logging.error("No config named %s" % name)
                 return 1
-            print_project_modules(lst)
+            print_project_modules(config)
         else:
             print_all_project_modules()
         return 0
