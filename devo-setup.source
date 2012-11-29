@@ -17,6 +17,13 @@ _devo_prepend_prefix() {
 
 
 devo_setup() {
-    local prefix=$1
-    . $DEVO_OVERLAY_DIR/$prefix
+    DEVO_NAME=$1
+    local overlay=$DEVO_OVERLAY_DIR/$DEVO_NAME
+    if [ ! -e $overlay ] ; then
+        echo "ERROR: No overlay named $DEVO_NAME" 1>&2
+        unset DEVO_NAME
+        return 1
+    fi
+    export DEVO_NAME
+    . $DEVO_OVERLAY_DIR/$DEVO_NAME
 }
