@@ -1,7 +1,10 @@
 import dbus
 
 def notify(title, body, icon=""):
-    bus = dbus.SessionBus()
+    try:
+        bus = dbus.SessionBus()
+    except dbus.exceptions.DBusException:
+        return
     obj = bus.get_object('org.freedesktop.Notifications', '/org/freedesktop/Notifications')
     iface = dbus.Interface(obj, dbus_interface = 'org.freedesktop.Notifications')
     iface.Notify("nanotify",
