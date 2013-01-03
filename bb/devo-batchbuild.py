@@ -103,8 +103,14 @@ def apply_resume_from(lst, resume_from):
     return lst
 
 
+class BuildResult(object):
+    def __init__(self):
+        self.vcs_fails = []
+        self.build_fails = []
+
+
 def do_build(module_configs, log_dir, options):
-    fails = []
+    result = BuildResult()
     for config in module_configs:
         name = config.flat_get("name")
         assert name
@@ -113,12 +119,22 @@ def do_build(module_configs, log_dir, options):
         log_file = open(log_file_name, "w")
         runner = Runner(log_file, options.verbose)
         module = Module(config, runner)
-        try:
-            if not options.no_src:
+
+        # update/checkout
+        if not options.no_src:
+            try:
                 if module.has_checkout():
                     module.update()
                 else:
                     module.checkout()
+            except BatchBuildError, exc:
+                logging.error("%s failed to update/checkout: %s", name, exc)
+                logging.error("See %s", log_file_name)
+                result.vcs_fails.append([name, str(exc), log_file_name])
+                nanotify.notify(name, "Failed to update/checkout", icon="dialog-warning")
+
+        # Build
+        try:
             if not options.src_only:
                 if options.refresh_build:
                     module.refresh_build()
@@ -129,9 +145,9 @@ def do_build(module_configs, log_dir, options):
         except BatchBuildError, exc:
             logging.error("%s failed to build: %s", name, exc)
             logging.error("See %s", log_file_name)
-            fails.append([name, str(exc), log_file_name])
+            result.build_fails.append([name, str(exc), log_file_name])
             nanotify.notify(name, "Failed to build", icon="dialog-error")
-    return fails
+    return result
 
 
 def main():
@@ -214,15 +230,24 @@ def main():
             print "- " + module_config.flat_get("name")
         return 0
 
-    fails = do_build(module_configs, log_dir, options)
+    result = do_build(module_configs, log_dir, options)
 
-    if len(fails) > 0:
+    if result.vcs_fails:
+        fails = result.vcs_fails
+        logging.error("%d modules failed to update/checkout:", len(fails))
+        for name, msg, log_file_name in fails:
+            logging.error("- %s: %s", name, msg)
+            logging.error("- %s: see %s", name, log_file_name)
+
+    if result.build_fails:
+        fails = result.build_fails
         logging.error("%d modules failed to build:", len(fails))
         for name, msg, log_file_name in fails:
             logging.error("- %s: %s", name, msg)
             logging.error("- %s: see %s", name, log_file_name)
-    else:
-        logging.info("All modules built successfully")
+
+    if not result.vcs_fails and not result.build_fails:
+        logging.info("All modules updated and built successfully")
 
     return 0
 
