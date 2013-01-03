@@ -19,7 +19,7 @@ class Git(object):
             self.branch = "master"
 
     def checkout(self):
-        cmd = "git clone"
+        cmd = "git clone --recursive"
         if self.branch != "master":
             cmd += " --branch " + self.branch
         cmd += " %s %s" % (self.url, self.module.name)
@@ -27,6 +27,7 @@ class Git(object):
 
     def update(self):
         self.module.runner.run(self.module.src_dir, "git pull --rebase")
+        self.module.runner.run(self.module.src_dir, "git submodule update")
 
 
 class KdeGit(Git):
