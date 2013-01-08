@@ -7,6 +7,7 @@ from optparse import OptionParser
 
 import yaml
 
+import flog
 import nanotify
 
 from batchbuilderror import BatchBuildError
@@ -49,19 +50,19 @@ def print_all_project_modules():
             continue
         full_name = os.path.join(BBCONFIG_DIR, name)
         config = yaml.load(open(full_name))
-        print name
+        flog.h1(name)
         print_project_modules(config)
 
 
 def print_project_modules(config):
     for dct in config["modules"]:
-        print "- %s" % dct["name"]
+        flog.li(dct["name"])
 
 
 def select_modules_from_config(name):
     config = load_config_dict_by_name(name)
     if not config:
-        logging.error("Could not find '%s' config file" % name)
+        flog.error("Could not find '%s' config file" % name)
         return None
     global_dict = config["global"]
     module_dicts = config["modules"]
@@ -90,7 +91,7 @@ def select_modules_from_list(module_names):
                 found = True
                 break
         if not found:
-            logging.error("Unknown module %s" % module_name)
+            flog.error("Unknown module %s" % module_name)
             return None
     return module_configs
 
@@ -98,7 +99,7 @@ def select_modules_from_list(module_names):
 def apply_resume_from(lst, resume_from):
     lst = list(itertools.dropwhile(lambda x: x.flat_get("name") != resume_from, lst))
     if len(lst) == 0:
-        logging.error("Unknown module %s" % resume_from)
+        flog.error("Unknown module %s" % resume_from)
         return None
     return lst
 
@@ -114,7 +115,7 @@ def do_build(module_configs, log_dir, options):
     for config in module_configs:
         name = config.flat_get("name")
         assert name
-        logging.info("### %s" % name)
+        flog.h1(name)
         log_file_name = os.path.join(log_dir, name + ".log")
         log_file = open(log_file_name, "w")
         runner = Runner(log_file, options.verbose)
@@ -128,8 +129,8 @@ def do_build(module_configs, log_dir, options):
                 else:
                     module.checkout()
             except BatchBuildError, exc:
-                logging.error("%s failed to update/checkout: %s", name, exc)
-                logging.error("See %s", log_file_name)
+                flog.error("%s failed to update/checkout: %s", name, exc)
+                flog.p("See %s", log_file_name)
                 result.vcs_fails.append([name, str(exc), log_file_name])
                 nanotify.notify(name, "Failed to update/checkout", icon="dialog-warning")
 
@@ -143,8 +144,8 @@ def do_build(module_configs, log_dir, options):
                 module.install()
                 nanotify.notify(name, "Build successfully", icon="dialog-ok")
         except BatchBuildError, exc:
-            logging.error("%s failed to build: %s", name, exc)
-            logging.error("See %s", log_file_name)
+            flog.error("%s failed to build: %s", name, exc)
+            flog.p("See %s", log_file_name)
             result.build_fails.append([name, str(exc), log_file_name])
             nanotify.notify(name, "Failed to build", icon="dialog-error")
     return result
@@ -189,7 +190,7 @@ def main():
             name = args[0]
             config = load_config_dict_by_name(name)
             if not config:
-                logging.error("No config named %s" % name)
+                flog.error("No config named %s" % name)
                 return 1
             print_project_modules(config)
         else:
@@ -199,9 +200,9 @@ def main():
     # Check devo name
     devo_name = os.environ.get("DEVO_NAME", None)
     if devo_name is None:
-        logging.error("No devo set up")
+        flog.error("No devo set up")
         return 1
-    logging.info("Using devo '%s'", devo_name)
+    flog.p("Using devo '%s'", devo_name)
 
     # Load config
     if len(args) == 0:
@@ -225,29 +226,30 @@ def main():
         os.makedirs(log_dir)
 
     if options.dry_run:
-        print "Would build:"
+        flog.p("Would build:")
         for module_config in module_configs:
-            print "- " + module_config.flat_get("name")
+            flog.li(module_config.flat_get("name"))
         return 0
 
     result = do_build(module_configs, log_dir, options)
 
+    flog.h1("Summary")
     if result.vcs_fails:
         fails = result.vcs_fails
-        logging.error("%d modules failed to update/checkout:", len(fails))
+        flog.error("%d modules failed to update/checkout:", len(fails))
         for name, msg, log_file_name in fails:
-            logging.error("- %s: %s", name, msg)
-            logging.error("- %s: see %s", name, log_file_name)
+            flog.li("%s: %s", name, msg)
+            flog.li("%s: see %s", name, log_file_name)
 
     if result.build_fails:
         fails = result.build_fails
-        logging.error("%d modules failed to build:", len(fails))
+        flog.error("%d modules failed to build:", len(fails))
         for name, msg, log_file_name in fails:
-            logging.error("- %s: %s", name, msg)
-            logging.error("- %s: see %s", name, log_file_name)
+            flog.li("%s: %s", name, msg)
+            flog.li("%s: see %s", name, log_file_name)
 
     if not result.vcs_fails and not result.build_fails:
-        logging.info("All modules updated and built successfully")
+        flog.p("All modules updated and built successfully")
 
     return 0
 
