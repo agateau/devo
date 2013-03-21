@@ -133,6 +133,8 @@ def do_build(module_configs, log_dir, options):
                 flog.p("See %s", log_file_name)
                 result.vcs_fails.append([name, str(exc), log_file_name])
                 nanotify.notify(name, "Failed to update/checkout", icon="dialog-warning")
+                if options.fatal:
+                    return result
 
         # Build
         try:
@@ -148,6 +150,8 @@ def do_build(module_configs, log_dir, options):
             flog.p("See %s", log_file_name)
             result.build_fails.append([name, str(exc), log_file_name])
             nanotify.notify(name, "Failed to build", icon="dialog-error")
+            if options.fatal:
+                return result
     return result
 
 
@@ -181,6 +185,10 @@ def main():
     parser.add_option("-l", "--list",
                       action="store_true", dest="list", default=False,
                       help="List available modules")
+
+    parser.add_option("--fatal",
+                      action="store_true", dest="fatal", default=False,
+                      help="Stop on first build failure")
 
     (options, args) = parser.parse_args()
     logging.basicConfig(format="%(asctime)s %(message)s", datefmt="%H:%M:%S", level=logging.DEBUG)
