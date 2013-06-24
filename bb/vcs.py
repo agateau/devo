@@ -58,3 +58,18 @@ class Hg(object):
 
     def update(self):
         self.module.runner.run(self.module.src_dir, "hg pull")
+
+
+class PartialSvn(object):
+    def __init__(self, module, repo_dirs):
+        self.module = module
+        self.repo_dirs = repo_dirs
+
+    def checkout(self):
+        cmd = "svn checkout -n %s %s" % (self.module.url, self.module.name)
+        self.module.runner.run(self.module.base_dir, cmd)
+        self.update()
+
+    def update(self):
+        for repo_dir in self.repo_dirs:
+            self.module.runner.run(self.module.src_dir, "svn up --non-interactive " + repo_dir)

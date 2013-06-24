@@ -24,6 +24,8 @@ class Module(object):
         self.url = self.config.get("repo-url", "")
         if repo_type == "svn":
             self.vcs = vcs.Svn(self)
+        elif repo_type == "partialsvn":
+            self.vcs = vcs.PartialSvn(self, self.config.get("repo-dirs"))
         elif repo_type == "git":
             self.vcs = vcs.Git(self)
         elif repo_type == "kdegit":
