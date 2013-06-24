@@ -55,17 +55,20 @@ class Module(object):
         if not os.path.exists(self.build_dir):
             os.makedirs(self.build_dir)
         configure = self.config.get("configure", "devo-cmake " + self.src_dir)
-        configure_opts = self.config.get("configure-options", "")
-        self.runner.run(self.build_dir, configure + " " + configure_opts)
+        opts = self.config.get("configure-options", "")
+        extra_opts = self.config.get("configure-extra-options", "")
+        self.runner.run(self.build_dir, configure + " " + opts + " " + extra_opts)
 
     def build(self):
         if not os.path.exists(self.build_dir):
             self.configure()
         build = self.config.get("build", "make")
-        build_opts = self.config.get("build-options", "")
-        self.runner.run(self.build_dir, build + " " + build_opts)
+        opts = self.config.get("build-options", "")
+        extra_opts = self.config.get("build-extra-options", "")
+        self.runner.run(self.build_dir, build + " " + opts + " " + extra_opts)
 
     def install(self):
         install = self.config.get("install", "make install")
-        install_opts = self.config.get("install-options", "")
-        self.runner.run(self.build_dir, install + " " + install_opts)
+        opts = self.config.get("install-options", "")
+        extra_opts = self.config.get("install-extra-options", "")
+        self.runner.run(self.build_dir, install + " " + opts + " " + extra_opts)
