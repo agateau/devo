@@ -7,7 +7,7 @@ class Svn(object):
         self.module.runner.run(self.module.base_dir, cmd)
 
     def update(self):
-        self.module.runner.run(self.module.src_dir, "svn up")
+        self.module.runner.run(self.module.src_dir, "svn up --non-interactive")
 
 
 class Git(object):
