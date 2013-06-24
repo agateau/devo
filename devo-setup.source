@@ -17,8 +17,37 @@ _devo_prepend_prefix() {
     export PYTHONPATH=$prefix/site-packages:$PYTHONPATH
 }
 
+# Reset common environment variables
+_devo_reset() {
+    unset KDEHOME
+    unset XDG_DATA_HOME
+    unset XDG_CACHE_HOME
+    unset XDG_CONFIG_HOME
+
+    unset KDEVARTMP
+    unset KDETMP
+
+    unset XDG_DATA_DIRS
+    unset XDG_CONFIG_DIRS
+
+    unset LD_LIBRARY_PATH
+    unset KDEDIR
+    unset KDEDIRS
+    unset QTDIR
+    unset QT_PLUGIN_PATH
+    unset PKG_CONFIG_PATH
+    unset CMAKE_PREFIX_PATH
+    unset QML_IMPORT_PATH
+    unset PYTHONPATH
+
+    local name
+    env | awk -F= '$1 ~ "^DEVO_" && $1 != "DEVO_OVERLAY_DIR" { print $1 }' | while read name ; do
+        unset $name
+    done
+}
 
 devo_setup() {
+    _devo_reset
     DEVO_NAME=$1
     local overlay=$DEVO_OVERLAY_DIR/$DEVO_NAME
     if [ ! -e $overlay ] ; then
@@ -28,4 +57,6 @@ devo_setup() {
     fi
     export DEVO_NAME
     . $DEVO_OVERLAY_DIR/$DEVO_NAME
+    [ -n "$DEVO_PREFIX" ] || echo "WARNING DEVO_PREFIX not set"
+    [ -n "$DEVO_BUILD_BASE_DIR" ] || echo "WARNING DEVO_BUILD_BASE_DIR not set"
 }
