@@ -55,6 +55,9 @@ devo_setup() {
         unset DEVO_NAME
         return 1
     fi
+    if [ -e $DEVO_OVERLAY_DIR/_base ] ; then
+        . $DEVO_OVERLAY_DIR/_base
+    fi
     export DEVO_NAME
     . $DEVO_OVERLAY_DIR/$DEVO_NAME
     [ -n "$DEVO_PREFIX" ] || echo "WARNING DEVO_PREFIX not set"
