@@ -18,6 +18,29 @@ from runner import Runner
 USAGE = "%prog <project.yaml|module> [module1 [module2...]]"
 
 BBCONFIG_DIR = os.path.expanduser("~/.config/devo/bb")
+BASE_CONFIG_NAME = "_base.yaml"
+
+
+def load_base_config_dict():
+    """
+    Load content of BASE_CONFIG_NAME
+    """
+    full_name = os.path.join(BBCONFIG_DIR, BASE_CONFIG_NAME)
+    if not os.path.exists(full_name):
+        return {}
+    return yaml.load(open(full_name))
+
+
+def list_yaml_files():
+    """
+    List all yaml files in BBCONFIG_DIR, except the base config file
+    """
+    for name in os.listdir(BBCONFIG_DIR):
+        if not name.endswith(".yaml"):
+            continue
+        if name == BASE_CONFIG_NAME:
+            continue
+        yield name
 
 
 def load_all_config_dicts():
@@ -25,9 +48,7 @@ def load_all_config_dicts():
     Returns a list of all config dicts
     """
     lst = []
-    for name in os.listdir(BBCONFIG_DIR):
-        if not name.endswith(".yaml"):
-            continue
+    for name in list_yaml_files():
         full_name = os.path.join(BBCONFIG_DIR, name)
         lst.append(yaml.load(open(full_name)))
     return lst
@@ -45,9 +66,7 @@ def load_config_dict_by_name(name):
 
 
 def print_all_project_modules():
-    for name in sorted(os.listdir(BBCONFIG_DIR)):
-        if not name.endswith(".yaml"):
-            continue
+    for name in sorted(list_yaml_files()):
         full_name = os.path.join(BBCONFIG_DIR, name)
         config = yaml.load(open(full_name))
         flog.h1(name)
@@ -59,17 +78,17 @@ def print_project_modules(config):
         flog.li(dct["name"])
 
 
-def select_modules_from_config(name):
+def select_modules_from_config(name, base_dict):
     config = load_config_dict_by_name(name)
     if not config:
         flog.error("Could not find '%s' config file" % name)
         return None
     global_dict = config["global"]
     module_dicts = config["modules"]
-    return [CascadedConfig(x, global_dict) for x in module_dicts]
+    return [CascadedConfig(x, global_dict, base_dict) for x in module_dicts]
 
 
-def select_modules_from_list(module_names):
+def select_modules_from_list(module_names, base_dict):
     def find_module(lst, name):
         for dct in lst:
             if dct["name"] == name:
@@ -86,7 +105,7 @@ def select_modules_from_list(module_names):
 
             dct = find_module(module_dict_list, module_name)
             if dct is not None:
-                config = CascadedConfig(dct, config_dict["global"])
+                config = CascadedConfig(dct, config_dict["global"], base_dict)
                 module_configs.append(config)
                 found = True
                 break
@@ -216,10 +235,11 @@ def main():
     if len(args) == 0:
         parser.error("Missing args")
 
+    base_dict = load_base_config_dict()
     if args[0].endswith(".yaml"):
-        module_configs = select_modules_from_config(args[0])
+        module_configs = select_modules_from_config(args[0], base_dict)
     else:
-        module_configs = select_modules_from_list(args)
+        module_configs = select_modules_from_list(args, base_dict)
     if module_configs is None:
         return 1
 
