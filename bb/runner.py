@@ -29,7 +29,7 @@ class Runner(object):
             sys.stdout.write(msg)
 
         sys.stdout.flush()
-        self.log_file.write("devo-batchbuild: " + command)
+        self.log_file.write("devo-batchbuild: %s\n" % command)
         self.log_file.flush()
 
         start_time = time.time()
