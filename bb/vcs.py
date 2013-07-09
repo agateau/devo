@@ -66,7 +66,7 @@ class PartialSvn(object):
         self.repo_dirs = repo_dirs
 
     def checkout(self):
-        cmd = "svn checkout -n %s %s" % (self.module.url, self.module.name)
+        cmd = "svn checkout --depth files %s %s" % (self.module.url, self.module.name)
         self.module.runner.run(self.module.base_dir, cmd)
         self.update()
 
