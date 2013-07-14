@@ -20,7 +20,7 @@ class Runner(object):
         self.log_file = log_file
         self.verbose = verbose
 
-    def run(self, cwd, command):
+    def run(self, cwd, command, env=None):
         stamp = time.strftime("%H:%M")
         msg = "%s %s" % (stamp, command)
         if self.verbose:
@@ -34,7 +34,7 @@ class Runner(object):
 
         start_time = time.time()
         try:
-            process = subprocess.Popen(command, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+            process = subprocess.Popen(command, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
             while True:
                 out = process.stdout.readline()
                 self.log_file.write(out)

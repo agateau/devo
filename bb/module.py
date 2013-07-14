@@ -57,7 +57,7 @@ class Module(object):
         configure = self.config.get("configure", "devo-cmake " + self.src_dir)
         opts = self.config.get("configure-options", "")
         extra_opts = self.config.get("configure-extra-options", "")
-        self.runner.run(self.build_dir, configure + " " + opts + " " + extra_opts)
+        self.runner.run(self.build_dir, configure + " " + opts + " " + extra_opts, env=self._getenv())
 
     def build(self):
         if not os.path.exists(self.build_dir):
@@ -65,10 +65,16 @@ class Module(object):
         build = self.config.get("build", "make")
         opts = self.config.get("build-options", "")
         extra_opts = self.config.get("build-extra-options", "")
-        self.runner.run(self.build_dir, build + " " + opts + " " + extra_opts)
+        self.runner.run(self.build_dir, build + " " + opts + " " + extra_opts, env=self._getenv())
 
     def install(self):
         install = self.config.get("install", "make install")
         opts = self.config.get("install-options", "")
         extra_opts = self.config.get("install-extra-options", "")
-        self.runner.run(self.build_dir, install + " " + opts + " " + extra_opts)
+        self.runner.run(self.build_dir, install + " " + opts + " " + extra_opts, env=self._getenv())
+
+    def _getenv(self):
+        env = dict(os.environ)
+        env["DEVO_SOURCE_DIR"] = os.path.join(env["DEVO_SOURCE_BASE_DIR"], self.name)
+        env["DEVO_BUILD_DIR"] = os.path.join(env["DEVO_BUILD_BASE_DIR"], self.name)
+        return env

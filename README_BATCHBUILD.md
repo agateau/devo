@@ -47,6 +47,15 @@ Default for all of the module options can be overridden by specifying them in th
 global section. Good candidates are `configure-options`, `build-options` or
 `repo-type`.
 
+Commands listed in `configure`, `build` and `install` can use the
+`DEVO_SOURCE_DIR` and `DEVO_BUILD_DIR` environment variables. When the command
+is running those variables respectively contain the name of the source dir and
+build dir for the component. That is, for a component named `foo`, variables
+are set like this:
+
+    DEVO_SOURCE_DIR=$DEVO_SOURCE_BASE_DIR/foo
+    DEVO_BUILD_DIR=$DEVO_BUILD_BASE_DIR/foo
+
 # `_base.yaml`
 
 You may want to define a `_base.yaml` file to define default values for all
