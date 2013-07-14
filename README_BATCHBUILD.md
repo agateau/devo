@@ -12,7 +12,9 @@ Syntax:
 
 Available options:
 
-- base-dir: Where to checkout code.
+- configure-options
+- build-options
+- repo-type
 
 ## Modules section
 
@@ -41,6 +43,12 @@ Available options:
 
 `name` is the only mandatory option.
 
-Default for all of the module options can be overriden by specifying them in the
+Default for all of the module options can be overridden by specifying them in the
 global section. Good candidates are `configure-options`, `build-options` or
 `repo-type`.
+
+# `_base.yaml`
+
+You may want to define a `_base.yaml` file to define default values for all
+.yaml files.  This is quite handy for example to define the `build-options`
+option.
