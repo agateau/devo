@@ -51,7 +51,7 @@ will use `$DEVO_SOURCE_BASE_DIR/foo` as the source dir.
 
 ### `devo-run`
 
-Run a command using a specified overlay:
+Run a command using a specific overlay:
 
     devo-run work mytool arg1 arg2
 
