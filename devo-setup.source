@@ -1,8 +1,5 @@
 # This file must be sourced by the shell
 
-# It exposes one "public" function: devo-setup and a few others "private"
-# functions to be used in overlay definitions.
-
 if [ -z "$DEVO_OVERLAY_DIR" ] ; then
     DEVO_OVERLAY_DIR=$HOME/.config/devo
 fi

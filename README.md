@@ -3,6 +3,11 @@
 Devo is a system to define custom environments to build and install software
 using different settings.
 
+## Initial setup
+
+- Make sure your shell sources `devo-setup.source`
+- Add devo dir to $PATH or symlink all `devo-*` binaries to a dir in $PATH.
+
 ## Creating an overlay
 
 Create `~/.config/devo/`
