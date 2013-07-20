@@ -63,3 +63,11 @@ devo_setup() {
     [ -n "$DEVO_PREFIX" ] || echo "WARNING DEVO_PREFIX not set"
     [ -n "$DEVO_BUILD_BASE_DIR" ] || echo "WARNING DEVO_BUILD_BASE_DIR not set"
 }
+
+devo_cb() {
+    cd $(devo-get-build-dir)
+}
+
+devo_cs() {
+    cd $(devo-get-source-dir)
+}

@@ -29,11 +29,11 @@ variables definitions. Here is an example:
 
 ## Tools
 
-### `devo_setup.sh`
+### `devo_setup`
 
 Loads an overlay in the current shell:
 
-    devo_setup.sh work
+    devo_setup work
 
 Loads the "work" overlay.
 
@@ -56,3 +56,11 @@ Run a command using a specific overlay:
     devo-run work mytool arg1 arg2
 
 Loads the "work" overlay and runs `mytool arg1 arg2`.
+
+### `devo_cb`
+
+When in a source dir, change to the matching build dir.
+
+### `devo_cs`
+
+When in a build dir, change to the matching source dir.
