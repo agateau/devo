@@ -49,6 +49,10 @@ When run without an argument, it tries to figure out the source dir using
 For example if you run `devo-cmake` from dir `$DEVO_BUILD_BASE_DIR/foo`, it
 will use `$DEVO_SOURCE_BASE_DIR/foo` as the source dir.
 
+### `devo-make`
+
+Wrapper around make: switch to the build dir and runs make from there.
+
 ### `devo-run`
 
 Run a command using a specific overlay:
