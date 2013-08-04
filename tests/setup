@@ -1,0 +1,15 @@
+export DEVO_OVERLAY_DIR=$PWD/overlay-dir
+export SANDBOX_DIR=/tmp/sandbox
+[ -d $SANDBOX_DIR ] && rm -r $SANDBOX_DIR
+mkdir -p $SANDBOX_DIR
+. ../devo-setup.source
+
+tst_equal() {
+    local actual=$1
+    local expected=$2
+    if [ "$actual" = "$expected" ] ; then
+        return 0
+    fi
+    echo "'$actual' (actual) != '$expected' (expected)"
+    return 1
+}

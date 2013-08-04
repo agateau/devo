@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+
+. ./setup
+
+mkdir -p $SANDBOX_DIR/build/ov1/prj1
+mkdir -p $SANDBOX_DIR/src/prj1
+
+devo_setup ov1
+cd $SANDBOX_DIR/build/ov1/prj1
+
+dir=$(devo-get-source-dir)
+tst_equal "$dir" "$SANDBOX_DIR/src/prj1"
+
