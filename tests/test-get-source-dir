@@ -3,12 +3,14 @@ set -e
 
 . ./setup
 
-mkdir -p $SANDBOX_DIR/build/ov1/prj1
-mkdir -p $SANDBOX_DIR/src/prj1
-
 devo_setup ov1
-cd $SANDBOX_DIR/build/ov1/prj1
 
-dir=$(devo-get-source-dir)
-tst_equal "$dir" "$SANDBOX_DIR/src/prj1"
+for x in prj1 prj2/subprj ; do
+    mkdir -p $DEVO_BUILD_BASE_DIR/$x
+    mkdir -p $DEVO_SOURCE_BASE_DIR/$x
 
+    cd $DEVO_BUILD_BASE_DIR/$x
+
+    dir=$(devo-get-source-dir)
+    tst_equal "$dir" "$DEVO_SOURCE_BASE_DIR/$x"
+done
