@@ -1,10 +1,7 @@
 # This file must be sourced by the shell
 
-# It exposes one "public" function: devo-setup and a few others "private"
-# functions to be used in overlay definitions.
-
 if [ -z "$DEVO_OVERLAY_DIR" ] ; then
-    DEVO_OVERLAY_DIR=$HOME/.config/devo
+    DEVO_OVERLAY_DIR=$HOME/.devo
 fi
 
 # Prepend $1 to common environment variables
@@ -62,4 +59,12 @@ devo_setup() {
     . $DEVO_OVERLAY_DIR/$DEVO_NAME
     [ -n "$DEVO_PREFIX" ] || echo "WARNING DEVO_PREFIX not set"
     [ -n "$DEVO_BUILD_BASE_DIR" ] || echo "WARNING DEVO_BUILD_BASE_DIR not set"
+}
+
+devo_cb() {
+    cd $(devo-get-build-dir)
+}
+
+devo_cs() {
+    cd $(devo-get-source-dir)
 }

@@ -3,6 +3,11 @@
 Devo is a system to define custom environments to build and install software
 using different settings.
 
+## Initial setup
+
+- Make sure your shell sources `devo-setup.source`
+- Add devo dir to $PATH or symlink all `devo-*` binaries to a dir in $PATH.
+
 ## Creating an overlay
 
 Create `~/.config/devo/`
@@ -29,11 +34,11 @@ variables definitions. Here is an example:
 
 ## Tools
 
-### `devo_setup.sh`
+### `devo_setup`
 
 Loads an overlay in the current shell:
 
-    devo_setup.sh work
+    devo_setup work
 
 Loads the "work" overlay.
 
@@ -49,6 +54,10 @@ When run without an argument, it tries to figure out the source dir using
 For example if you run `devo-cmake` from dir `$DEVO_BUILD_BASE_DIR/foo`, it
 will use `$DEVO_SOURCE_BASE_DIR/foo` as the source dir.
 
+### `devo-make`
+
+Wrapper around make: switch to the build dir and runs make from there.
+
 ### `devo-run`
 
 Run a command using a specific overlay:
@@ -56,3 +65,11 @@ Run a command using a specific overlay:
     devo-run work mytool arg1 arg2
 
 Loads the "work" overlay and runs `mytool arg1 arg2`.
+
+### `devo_cb`
+
+When in a source dir, change to the matching build dir.
+
+### `devo_cs`
+
+When in a build dir, change to the matching source dir.
