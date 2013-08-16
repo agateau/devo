@@ -10,6 +10,11 @@ tst_equal() {
     if [ "$actual" = "$expected" ] ; then
         return 0
     fi
-    echo "'$actual' (actual) != '$expected' (expected)"
+    tst_fail "'$actual' (actual) != '$expected' (expected)"
+    return 1
+}
+
+tst_fail() {
+    echo "TEST_FAILURE: $*"
     return 1
 }

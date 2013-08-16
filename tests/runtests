@@ -2,5 +2,5 @@
 set -e
 for tst in test-* ; do
     echo -n "$tst... "
-    ./$tst && echo "OK" || echo "Fail"
+    ./$tst && echo "OK" || echo "FAIL"
 done
