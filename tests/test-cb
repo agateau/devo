@@ -1,0 +1,42 @@
+#!/bin/sh
+set -e
+
+. ./setup
+
+# Setup
+devo_setup ov1
+
+for x in prj1 prj2/subprj ; do
+    mkdir -p $DEVO_BUILD_BASE_DIR/$x
+    mkdir -p $DEVO_SOURCE_BASE_DIR/$x
+done
+mkdir -p $DEVO_SOURCE_BASE_DIR/prj1/foo/bar
+
+# Basic test
+for x in prj1 prj2/subprj ; do
+    cd $DEVO_SOURCE_BASE_DIR/$x
+
+    devo_cb
+    tst_equal "$PWD" "$DEVO_BUILD_BASE_DIR/$x"
+done
+
+# If build dir does not exist, devo_cb should offer to create it
+src_dir=$DEVO_SOURCE_BASE_DIR/no-build-dir
+build_dir=$DEVO_BUILD_BASE_DIR/no-build-dir
+mkdir -p $src_dir
+cd $src_dir
+
+# Try to switch, but answer 'no' to the offer to create the dir
+__YESNO_ANSWER=n
+devo_cb > /dev/null
+if [ -d "$build_dir" ] ; then
+    tst_fail "'$build_dir' should not have been created"
+fi
+tst_equal "$PWD" "$src_dir"
+
+# Try to switch, answer 'yes' to the offer to create the dir
+__YESNO_ANSWER=y
+devo_cb > /dev/null
+tst_equal "$PWD" "$build_dir"
+
+unset __YESNO_ANSWER

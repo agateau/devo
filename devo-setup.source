@@ -61,10 +61,44 @@ devo_setup() {
     [ -n "$DEVO_BUILD_BASE_DIR" ] || echo "WARNING DEVO_BUILD_BASE_DIR not set"
 }
 
+__yesno() {
+    local answer
+    echo -n "$1 "
+    # __YESNO_ANSWER is used by tests to answer questions automatically
+    if [ -n "$__YESNO_ANSWER" ] ; then
+        answer="$__YESNO_ANSWER"
+    else
+        read answer
+    fi
+    case "$answer" in
+    y|Y)
+        return 0
+        ;;
+    *)
+        return 1
+        ;;
+    esac
+}
+
 devo_cb() {
-    cd $(devo-get-build-dir)
+    local dir
+    if dir=$(devo-get-build-dir) ; then
+        cd "$dir"
+        return
+    fi
+    if __yesno "'$dir' does not exist. Create it?" ; then
+        mkdir -p "$dir"
+        cd "$dir"
+        return
+    fi
 }
 
 devo_cs() {
-    cd $(devo-get-source-dir)
+    local dir
+    dir=$(devo-get-source-dir)
+    if [ -d "$dir" ] ; then
+        cd "$dir"
+    else
+        echo "ERROR: No source dir found for $PWD"
+    fi
 }

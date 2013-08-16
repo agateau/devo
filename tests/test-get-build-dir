@@ -3,14 +3,39 @@ set -e
 
 . ./setup
 
+# Setup
 devo_setup ov1
 
 for x in prj1 prj2/subprj ; do
     mkdir -p $DEVO_BUILD_BASE_DIR/$x
     mkdir -p $DEVO_SOURCE_BASE_DIR/$x
+done
+mkdir -p $DEVO_SOURCE_BASE_DIR/prj1/foo/bar
+mkdir -p $DEVO_SOURCE_BASE_DIR/no-build-dir
 
+# Basic test
+for x in prj1 prj2/subprj ; do
     cd $DEVO_SOURCE_BASE_DIR/$x
 
     dir=$(devo-get-build-dir)
     tst_equal "$dir" "$DEVO_BUILD_BASE_DIR/$x"
 done
+
+# Sometimes a project does not have all the subdirs on the build side so we can
+# have:
+# - source: prj1/foo/bar
+# - build: prj1
+#
+# In this case devo-get-build-dir should return prj1
+cd $DEVO_SOURCE_BASE_DIR/prj1/foo/bar
+dir=$(devo-get-build-dir)
+tst_equal "$dir" "$DEVO_BUILD_BASE_DIR/prj1"
+
+# If the build dir does not exist, devo-get-build-dir should return the expected
+# dir but exit with 1
+cd $DEVO_SOURCE_BASE_DIR/no-build-dir
+if dir=$(devo-get-build-dir) ; then
+    echo "devo-get-build-dir should not succeed when build dir does not exist"
+    exit 1
+fi
+tst_equal "$dir" "$DEVO_BUILD_BASE_DIR/no-build-dir"

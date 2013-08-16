@@ -1,10 +1,22 @@
 #!/bin/sh
 set -e
 
-dir=$(echo $PWD | sed "s|$DEVO_SOURCE_BASE_DIR|$DEVO_BUILD_BASE_DIR|")
-if [ -d "$dir" ] ; then
-    echo $dir
-else
-    echo "'$dir' does not exist" 1>&2
-    return 1
+wanted_dir=$(echo $PWD | sed "s|$DEVO_SOURCE_BASE_DIR|$DEVO_BUILD_BASE_DIR|")
+if [ -d "$wanted_dir" ] ; then
+    echo "$wanted_dir"
+    exit 0
 fi
+
+# Try to find an existing build dir upper
+dir="$wanted_dir"
+while true ; do
+    dir=$(dirname $dir)
+    if [ "$dir" = "$DEVO_BUILD_BASE_DIR" ] ; then
+        echo "$wanted_dir"
+        exit 1
+    fi
+    if [ -d "$dir" ] ; then
+        echo "$dir"
+        exit 0
+    fi
+done

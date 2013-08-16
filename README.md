@@ -70,6 +70,22 @@ Loads the "work" overlay and runs `mytool arg1 arg2`.
 
 When in a source dir, change to the matching build dir.
 
+If a matching build dir does not exist, try to find an existing parent build
+dir, for example given this setup:
+
+    + $DEVO_SOURCE_BASE_DIR
+    '-+ prj1
+      '- foo
+
+    + $DEVO_BUILD_BASE_DIR
+    '- prj1
+
+If you are in `$DEVO_SOURCE_BASE_DIR/prj1/foo`, `devo-cb` will switch to
+`$DEVO_BUILD_BASE_DIR/prj1`.
+
+If no build dir can be found, `devo-cb` offers to create it.
+
 ### `devo_cs`
 
-When in a build dir, change to the matching source dir.
+When in a build dir, change to the matching source dir if it exists, otherwise
+stays there.
