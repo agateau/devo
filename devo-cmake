@@ -10,13 +10,55 @@ checkvar DEVO_NAME
 checkvar DEVO_PREFIX
 checkvar DEVO_CMAKE_BUILD_TYPE
 
-if [ $# = 0 ] ; then
-    [ -n "$DEVO_SOURCE_BASE_DIR" ] || die "No argument given and no \$DEVO_SOURCE_BASE_DIR environment variable set"
-    dir=$DEVO_SOURCE_BASE_DIR/$(basename $PWD)
-    [ -d "$dir" ] || die "Tried to find source dir from \$DEVO_SOURCE_BASE_DIR, but \"$dir\" does not exist"
+usage() {
+    if [ -n "$1" ] ; then
+        echo "ERROR: $*"
+        echo
+    fi
+
+    cat <<EOF
+devo-cmake [<options>] [<sourcedir>]
+
+Options:
+    -h, --help        this screen
+
+All other options are directly passed to cmake.
+
+Arguments:
+    sourcedir         path to source dir. If no path is provided, devo-cmake
+                      will use devo-get-source-dir to find one.
+EOF
+    exit 1
+}
+
+args=""
+src_dir=""
+
+for arg in $* ; do
+    case $arg in
+    -h|--help)
+        usage
+        ;;
+    -*)
+        args="$args $arg"
+        ;;
+    *)
+        if [ -z "$src_dir" ] ; then
+            src_dir=$arg
+        else
+            usage "Too many arguments"
+        fi
+        ;;
+    esac
+done
+
+if [ -z "$src_dir" ] ; then
+    src_dir=$(devo-get-source-dir)
+    [ -d $src_dir ] || die "Could not find a source dir for $PWD"
+    echo "devo-cmake: using `$src_dir` as source dir"
 fi
 
 cmake \
     -DCMAKE_INSTALL_PREFIX=$DEVO_PREFIX \
     -DCMAKE_BUILD_TYPE=$DEVO_CMAKE_BUILD_TYPE \
-    $dir $*
+    $src_dir $args
