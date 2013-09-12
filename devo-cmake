@@ -53,9 +53,20 @@ for arg in $* ; do
 done
 
 if [ -z "$src_dir" ] ; then
-    src_dir=$(devo-get-source-dir)
-    [ -d $src_dir ] || die "Could not find a source dir for $PWD"
-    echo "devo-cmake: using `$src_dir` as source dir"
+    if [ -e "CMakeLists.txt" ] ; then
+        # We are in the source dir, go to the buid dir
+        src_dir=$PWD
+        if ! build_dir=$(devo-get-build-dir) ; then
+            exit 1
+        fi
+        echo "devo-cmake: using '$build_dir' as build dir"
+        cd $build_dir
+    else
+        # Assume we are in a build dir
+        src_dir=$(devo-get-source-dir)
+        [ -d "$src_dir" ] || die "Could not find a source dir for $PWD"
+        echo "devo-cmake: using '$src_dir' as source dir"
+    fi
 fi
 
 cmake \
