@@ -38,8 +38,16 @@ _devo_reset() {
     unset PYTHONPATH
 
     local name
-    env | awk -F= '$1 ~ "^DEVO_" && $1 != "DEVO_OVERLAY_DIR" { print $1 }' | while read name ; do
-        unset $name
+    env | awk -F= '$1 ~ "^DEVO_" { print $1 }' | while read name ; do
+        case "$name" in
+        DEVO_OVERLAY_DIR)
+            ;;
+        DEVO_BUILD_BASE_ROOT_DIR)
+            ;;
+        *)
+            unset $name
+            ;;
+        esac
     done
 }
 
@@ -56,9 +64,26 @@ devo_setup() {
         . $DEVO_OVERLAY_DIR/_base
     fi
     export DEVO_NAME
+    export DEVO_BUILD_BASE_DIR=$DEVO_BUILD_BASE_ROOT_DIR/$DEVO_NAME
     . $DEVO_OVERLAY_DIR/$DEVO_NAME
     [ -n "$DEVO_PREFIX" ] || echo "WARNING DEVO_PREFIX not set"
     [ -n "$DEVO_BUILD_BASE_DIR" ] || echo "WARNING DEVO_BUILD_BASE_DIR not set"
+}
+
+devo_setup_from_pwd() {
+    case $PWD in
+    $DEVO_BUILD_BASE_ROOT_DIR/*)
+        local overlay=$(echo $PWD | sed "s|$DEVO_BUILD_BASE_ROOT_DIR/\?\([^/]*\).*|\\1|")
+        ;;
+    *)
+        # Not in a build dir
+        return
+        ;;
+    esac
+    if [ -e "$DEVO_OVERLAY_DIR/$overlay" -a "$DEVO_NAME" != "$overlay" ] ; then
+        echo "devo: loading overlay '$overlay'"
+        devo_setup $overlay
+    fi
 }
 
 __yesno() {
