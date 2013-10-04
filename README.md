@@ -104,7 +104,7 @@ variables:
 
 It may also define the following variables:
 
-- `$DEVO_CMAKE_BUILD_TYPE`: Build type argument passed to CMake
+- `$DEVO_CMAKE_BUILD_TYPE`: Build type argument passed by devo-cmake to cmake.
 
 And other variables relevant for your environment:
 
@@ -113,17 +113,6 @@ And other variables relevant for your environment:
 - ...
 
 TODO: document `_devo_prepend_prefix`.
-
-## Content of `_base`
-
-You can create a `~/.devo/_base` file defining common environment variables
-definitions. This file is sourced before loading a new overlay.
-
-Here is an example:
-
-    export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin
-    export CC=$HOME/opt/cc/gcc
-    export CXX=$HOME/opt/cc/g++
 
 ## Tools
 
@@ -185,6 +174,17 @@ When outside of a source dir, `devo_cb` prints an error.
 
 When in a build dir, change to the matching source dir if it exists, otherwise
 stays there.
+
+## The `~/.devo/_base` file
+
+You can create a `~/.devo/_base` file defining common environment variables.
+This file is sourced before loading a new overlay.
+
+Here is an example:
+
+    export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin
+    export CC=$HOME/opt/cc/gcc
+    export CXX=$HOME/opt/cc/g++
 
 ## Shell integration goodies
 
