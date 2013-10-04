@@ -39,3 +39,12 @@ if dir=$(devo-get-build-dir) ; then
     exit 1
 fi
 tst_equal "$dir" "$DEVO_BUILD_BASE_DIR/no-build-dir"
+
+# If the user is not in a sub dir of the source dir, devo-get-build-dir should
+# return an empty string and exit with 1
+cd $SANDBOX_DIR
+if dir=$(devo-get-build-dir) ; then
+    echo "devo-get-build-dir should not succeed when user is not in a sub dir of the source dir"
+    exit 1
+fi
+tst_equal "$dir" ""

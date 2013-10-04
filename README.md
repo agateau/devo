@@ -83,7 +83,10 @@ dir, for example given this setup:
 If you are in `$DEVO_SOURCE_BASE_DIR/prj1/foo`, `devo-cb` will switch to
 `$DEVO_BUILD_BASE_DIR/prj1`.
 
-If no build dir can be found, `devo-cb` offers to create it.
+If no build dir can be found but user is in a source dir, `devo-cb` offers to
+create it.
+
+When outside of a source dir, prints an error.
 
 ### `devo_cs`
 

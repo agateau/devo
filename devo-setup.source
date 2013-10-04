@@ -86,6 +86,10 @@ devo_cb() {
         cd "$dir"
         return
     fi
+    if [ -z "$dir" ] ; then
+        echo "ERROR: No build dir found for $PWD"
+        return
+    fi
     if __yesno "'$dir' does not exist. Create it?" ; then
         mkdir -p "$dir"
         cd "$dir"

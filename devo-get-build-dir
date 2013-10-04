@@ -3,8 +3,12 @@ set -e
 
 wanted_dir=$(echo $PWD | sed "s|$DEVO_SOURCE_BASE_DIR|$DEVO_BUILD_BASE_DIR|")
 if [ -d "$wanted_dir" ] ; then
-    echo "$wanted_dir"
-    exit 0
+    if [ "$wanted_dir" = "$PWD" ] ; then
+        exit 1
+    else
+        echo "$wanted_dir"
+        exit 0
+    fi
 fi
 
 # Try to find an existing build dir upper
