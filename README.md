@@ -83,19 +83,19 @@ specific to an overlay.
 
 ## Initial setup
 
-- Add the following lines to your shell:
+First, add the following lines to your shell:
 
     export DEVO_BUILD_BASE_ROOT_DIR=/path/to/build/root/dir
     . /path/to/devo/devo-setup.source
 
-- Add the source dir of Devo to `$PATH` or symlink all `devo-*` binaries to a
+Then add the source dir of Devo to `$PATH` or symlink all `devo-*` binaries to a
   dir in `$PATH`.
 
-- Create `~/.config/devo/`
+Finally, create `~/.devo/`. This dir will contain all the overlay definitions.
 
 ## Creating an overlay
 
-Create an overlay file in `~/.config/devo/`.
+Create an overlay file in `~/.devo/`. The file name is used as the overlay name.
 This file is a shell script which should at least define the following
 variables:
 
@@ -116,8 +116,8 @@ TODO: document `_devo_prepend_prefix`.
 
 ## Content of `_base`
 
-You can create a `~/.config/devo/_base` file defining common environment
-variables definitions. This file is sourced before loading a new overlay.
+You can create a `~/.devo/_base` file defining common environment variables
+definitions. This file is sourced before loading a new overlay.
 
 Here is an example:
 
@@ -186,7 +186,10 @@ When outside of a source dir, `devo_cb` prints an error.
 When in a build dir, change to the matching source dir if it exists, otherwise
 stays there.
 
-## Shell integration
+## Shell integration goodies
+
+When an overlay is loaded, the `$DEVO_NAME` variable contains its name. It can
+be handy to add this to your prompt.
 
 Zsh users can add the following to their `.zshrc`:
 
