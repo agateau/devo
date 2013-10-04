@@ -28,9 +28,9 @@ It may also define the following variables:
 You can create a `~/.config/devo/_base` file defining common environment
 variables definitions. Here is an example:
 
-    export PATH=/home/aurelien/bin:/home/aurelien/etc/bin:/usr/local/bin:/usr/bin:/bin
-    export CC=/home/aurelien/opt/cc/gcc
-    export CXX=/home/aurelien/opt/cc/g++
+    export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin
+    export CC=$HOME/opt/cc/gcc
+    export CXX=$HOME/opt/cc/g++
 
 ## Tools
 
