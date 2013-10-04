@@ -1,6 +1,15 @@
 #!/bin/sh
 set -e
 
+case "$PWD" in
+"$DEVO_BUILD_BASE_DIR"*)
+    echo $PWD
+    exit 0
+    ;;
+*)
+    ;;
+esac
+
 wanted_dir=$(echo $PWD | sed "s|$DEVO_SOURCE_BASE_DIR|$DEVO_BUILD_BASE_DIR|")
 if [ -d "$wanted_dir" ] ; then
     if [ "$wanted_dir" = "$PWD" ] ; then

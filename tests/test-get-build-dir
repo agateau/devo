@@ -48,3 +48,12 @@ if dir=$(devo-get-build-dir) ; then
     exit 1
 fi
 tst_equal "$dir" ""
+
+# If user is in a sub dir of the build dir, devo-get-build-dir should return
+# the current dir and
+cd $DEVO_BUILD_BASE_DIR/prj1
+if ! dir=$(devo-get-build-dir) ; then
+    echo "devo-get-build-dir should not fail when user is in a sub dir of the build dir"
+    exit 1
+fi
+tst_equal "$dir" "$PWD"
