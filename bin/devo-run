@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+
+. $(dirname $0)/../lib/devo/devo-setup.source
+
+prefix=$1
+shift
+devo_setup $prefix
+
+exec $*

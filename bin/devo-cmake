@@ -1,10 +1,7 @@
 #!/bin/sh
 set -e
 
-oldpwd=$PWD
-cd $(dirname $(readlink $0))
-. ./functions
-cd $oldpwd
+. $(dirname $0)/../lib/devo/functions
 
 checkvar DEVO_NAME
 checkvar DEVO_PREFIX
@@ -54,9 +51,10 @@ done
 
 if [ -z "$src_dir" ] ; then
     if [ -e "CMakeLists.txt" ] ; then
-        # We are in the source dir, go to the buid dir
+        # We are in the source dir, go to the build dir
         src_dir=$PWD
         if ! build_dir=$(devo-get-build-dir) ; then
+            die "Could not find a build dir dir for $PWD"
             exit 1
         fi
         echo "devo-cmake: using '$build_dir' as build dir"

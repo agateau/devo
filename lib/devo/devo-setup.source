@@ -55,8 +55,13 @@ devo_setup() {
     _devo_reset
     DEVO_NAME=$1
     local overlay=$DEVO_OVERLAY_DIR/$DEVO_NAME
-    if [ ! -e $overlay ] ; then
+    if [ ! -e "$overlay" ] ; then
         echo "ERROR: No overlay named $DEVO_NAME" 1>&2
+        unset DEVO_NAME
+        return 1
+    fi
+    if [ -z "$DEVO_BUILD_BASE_ROOT_DIR" ] ; then
+        echo "ERROR: DEVO_BUILD_BASE_ROOT_DIR is not set"
         unset DEVO_NAME
         return 1
     fi
@@ -67,7 +72,6 @@ devo_setup() {
     export DEVO_BUILD_BASE_DIR=$DEVO_BUILD_BASE_ROOT_DIR/$DEVO_NAME
     . $DEVO_OVERLAY_DIR/$DEVO_NAME
     [ -n "$DEVO_PREFIX" ] || echo "WARNING DEVO_PREFIX not set"
-    [ -n "$DEVO_BUILD_BASE_DIR" ] || echo "WARNING DEVO_BUILD_BASE_DIR not set"
 }
 
 devo_setup_from_pwd() {
@@ -131,3 +135,5 @@ devo_cs() {
         echo "ERROR: No source dir found for $PWD"
     fi
 }
+
+# vi: filetype=sh

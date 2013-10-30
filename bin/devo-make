@@ -1,10 +1,7 @@
 #!/bin/sh
 set -e
 
-oldpwd=$PWD
-cd $(dirname $(readlink $0))
-export PATH=$PWD:$PATH
-cd $oldpwd
+. $(dirname $0)/../lib/devo/devo-setup.source
 
 dir=$(devo-get-build-dir)
 echo "Running make in '$dir'"

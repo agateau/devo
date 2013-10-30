@@ -86,12 +86,9 @@ specific to an overlay.
 First, add the following lines to your shell:
 
     export DEVO_BUILD_BASE_ROOT_DIR=/path/to/build/root/dir
-    . /path/to/devo/devo-setup.source
+    . /path/to/devo/lib/devo/devo-setup.source
 
-Then add the source dir of Devo to `$PATH` or symlink all `devo-*` binaries to a
-  dir in `$PATH`.
-
-Finally, create `~/.devo/`. This dir will contain all the overlay definitions.
+Then, create `~/.devo/`. This dir will contain all the overlay definitions.
 
 ## Creating an overlay
 
@@ -102,9 +99,9 @@ variables:
 - `$DEVO_PREFIX`
 - `$DEVO_SOURCE_BASE_DIR`
 
-It may also define the following variables:
+It may also define:
 
-- `$DEVO_CMAKE_BUILD_TYPE`: Build type argument passed by devo-cmake to cmake.
+- `$DEVO_CMAKE_BUILD_TYPE`: Build type argument passed by `devo-cmake` to `cmake`.
 
 And other variables relevant for your environment:
 
