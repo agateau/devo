@@ -11,6 +11,6 @@ for x in prj1 prj2/subprj ; do
 
     cd $DEVO_BUILD_BASE_DIR/$x
 
-    dir=$(devo-get-source-dir)
+    dir=$(devo_getsourcedir)
     tst_equal "$dir" "$DEVO_SOURCE_BASE_DIR/$x"
 done

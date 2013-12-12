@@ -3,7 +3,7 @@ set -e
 
 . $(dirname $0)/../lib/devo/devo-setup.source
 
-dir=$(devo-get-build-dir)
+dir=$(devo_getbuilddir)
 echo "Running make in '$dir'"
 cd $dir
 exec make $*

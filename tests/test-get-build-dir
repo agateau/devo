@@ -17,7 +17,7 @@ mkdir -p $DEVO_SOURCE_BASE_DIR/no-build-dir
 for x in prj1 prj2/subprj ; do
     cd $DEVO_SOURCE_BASE_DIR/$x
 
-    dir=$(devo-get-build-dir)
+    dir=$(devo_getbuilddir)
     tst_equal "$dir" "$DEVO_BUILD_BASE_DIR/$x"
 done
 
@@ -26,34 +26,34 @@ done
 # - source: prj1/foo/bar
 # - build: prj1
 #
-# In this case devo-get-build-dir should return prj1
+# In this case devo_getbuilddir should return prj1
 cd $DEVO_SOURCE_BASE_DIR/prj1/foo/bar
-dir=$(devo-get-build-dir)
+dir=$(devo_getbuilddir)
 tst_equal "$dir" "$DEVO_BUILD_BASE_DIR/prj1"
 
-# If the build dir does not exist, devo-get-build-dir should return the expected
+# If the build dir does not exist, devo_getbuilddir should return the expected
 # dir but exit with 1
 cd $DEVO_SOURCE_BASE_DIR/no-build-dir
-if dir=$(devo-get-build-dir) ; then
-    echo "devo-get-build-dir should not succeed when build dir does not exist"
+if dir=$(devo_getbuilddir) ; then
+    echo "devo_getbuilddir should not succeed when build dir does not exist"
     exit 1
 fi
 tst_equal "$dir" "$DEVO_BUILD_BASE_DIR/no-build-dir"
 
-# If the user is not in a sub dir of the source dir, devo-get-build-dir should
+# If the user is not in a sub dir of the source dir, devo_getbuilddir should
 # return an empty string and exit with 1
 cd $SANDBOX_DIR
-if dir=$(devo-get-build-dir) ; then
-    echo "devo-get-build-dir should not succeed when user is not in a sub dir of the source dir"
+if dir=$(devo_getbuilddir) ; then
+    echo "devo_getbuilddir should not succeed when user is not in a sub dir of the source dir"
     exit 1
 fi
 tst_equal "$dir" ""
 
-# If user is in a sub dir of the build dir, devo-get-build-dir should return
+# If user is in a sub dir of the build dir, devo_getbuilddir should return
 # the current dir and
 cd $DEVO_BUILD_BASE_DIR/prj1
-if ! dir=$(devo-get-build-dir) ; then
-    echo "devo-get-build-dir should not fail when user is in a sub dir of the build dir"
+if ! dir=$(devo_getbuilddir) ; then
+    echo "devo_getbuilddir should not fail when user is in a sub dir of the build dir"
     exit 1
 fi
 tst_equal "$dir" "$PWD"

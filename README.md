@@ -41,7 +41,7 @@ software installed there.
 If libfoo uses the CMake build system, one can then build it with:
 
     cd $HOME/build/overlay1/libfoo
-    devo-cmake
+    devo_cmake
     make
     make install
 
@@ -56,14 +56,14 @@ dir, `devo_cs` changes to the source dir.
     devo_cs
     # $PWD is now $HOME/src/libfoo
 
-`devo-cmake` is also smart enough to run in the build dir, and Devo comes with a
-thin wrapper for `make`: `devo-make` which brings build dir awareness as well,
+`devo_cmake` is also smart enough to run in the build dir, and Devo comes with a
+thin wrapper for `make`: `devo_make` which brings build dir awareness as well,
 so one can also build libfoo like this:
 
     cd $HOME/src/libfoo
-    devo-cmake
-    devo-make
-    devo-make install
+    devo_cmake
+    devo_make
+    devo_make install
 
 ## Variables used by Devo
 
@@ -101,7 +101,7 @@ variables:
 
 It may also define:
 
-- `$DEVO_CMAKE_BUILD_TYPE`: Build type argument passed by `devo-cmake` to `cmake`.
+- `$DEVO_CMAKE_BUILD_TYPE`: Build type argument passed by `devo_cmake` to `cmake`.
 
 And other variables relevant for your environment:
 
@@ -121,27 +121,27 @@ Loads an overlay in the current shell:
 
 Loads the "work" overlay.
 
-### `devo-cmake`
+### `devo_cmake`
 
 Run `cmake` with the right prefix and build type option. Usage:
 
-    devo-cmake /path/to/source/dir
+    devo_cmake /path/to/source/dir
 
 When run without an argument, it tries to figure out the source dir using
 `$DEVO_SOURCE_BASE_DIR` and the base name of the current dir.
 
-For example if you run `devo-cmake` from dir `$DEVO_BUILD_BASE_DIR/foo`, it
+For example if you run `devo_cmake` from dir `$DEVO_BUILD_BASE_DIR/foo`, it
 will use `$DEVO_SOURCE_BASE_DIR/foo` as the source dir.
 
-### `devo-make`
+### `devo_make`
 
 Wrapper around make: switch to the build dir and runs make from there.
 
-### `devo-run`
+### `devo_run`
 
 Run a command using a specific overlay:
 
-    devo-run work mytool arg1 arg2
+    devo_run work mytool arg1 arg2
 
 Loads the "work" overlay and runs `mytool arg1 arg2`.
 

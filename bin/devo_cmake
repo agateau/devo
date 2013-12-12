@@ -14,7 +14,7 @@ usage() {
     fi
 
     cat <<EOF
-devo-cmake [<options>] [<sourcedir>]
+devo_cmake [<options>] [<sourcedir>]
 
 Options:
     -h, --help        this screen
@@ -22,8 +22,8 @@ Options:
 All other options are directly passed to cmake.
 
 Arguments:
-    sourcedir         path to source dir. If no path is provided, devo-cmake
-                      will use devo-get-source-dir to find one.
+    sourcedir         path to source dir. If no path is provided, devo_cmake
+                      will use devo_getsourcedir to find one.
 EOF
     exit 1
 }
@@ -53,17 +53,17 @@ if [ -z "$src_dir" ] ; then
     if [ -e "CMakeLists.txt" ] ; then
         # We are in the source dir, go to the build dir
         src_dir=$PWD
-        if ! build_dir=$(devo-get-build-dir) ; then
+        if ! build_dir=$(devo_getbuilddir) ; then
             die "Could not find a build dir dir for $PWD"
             exit 1
         fi
-        echo "devo-cmake: using '$build_dir' as build dir"
+        echo "devo_cmake: using '$build_dir' as build dir"
         cd $build_dir
     else
         # Assume we are in a build dir
-        src_dir=$(devo-get-source-dir)
+        src_dir=$(devo_getsourcedir)
         [ -d "$src_dir" ] || die "Could not find a source dir for $PWD"
-        echo "devo-cmake: using '$src_dir' as source dir"
+        echo "devo_cmake: using '$src_dir' as source dir"
     fi
 fi
 

@@ -111,7 +111,7 @@ __yesno() {
 
 devo_cb() {
     local dir
-    if dir=$(devo-get-build-dir) ; then
+    if dir=$(devo_getbuilddir) ; then
         cd "$dir"
         return
     fi
@@ -128,7 +128,7 @@ devo_cb() {
 
 devo_cs() {
     local dir
-    dir=$(devo-get-source-dir)
+    dir=$(devo_getsourcedir)
     if [ -d "$dir" ] ; then
         cd "$dir"
     else
