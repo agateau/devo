@@ -1,0 +1,16 @@
+#!/bin/sh
+set -e
+
+. ./setup
+
+devo_setup ov1
+
+for x in prj1 prj2/subprj ; do
+    mkdir -p $DEVO_BUILD_BASE_DIR/$x
+    mkdir -p $DEVO_SOURCE_BASE_DIR/$x
+
+    cd $DEVO_BUILD_BASE_DIR/$x
+
+    dir=$(devo_getsourcedir)
+    tst_equal "$dir" "$DEVO_SOURCE_BASE_DIR/$x"
+done

@@ -1,0 +1,37 @@
+#!/bin/sh
+set -e
+
+case "$PWD" in
+"$DEVO_SOURCE_BASE_DIR"*)
+    # In the source dir, let's continue
+    ;;
+"$DEVO_BUILD_BASE_DIR"*)
+    # Already in the build dir, nothing to do
+    echo $PWD
+    exit 0
+    ;;
+*)
+    # Not in a source dir, nor in a build dir, error
+    exit 1
+    ;;
+esac
+
+wanted_dir=$(echo $PWD | sed "s|$DEVO_SOURCE_BASE_DIR|$DEVO_BUILD_BASE_DIR|")
+if [ -d "$wanted_dir" ] ; then
+    echo "$wanted_dir"
+    exit 0
+fi
+
+# Try to find an existing build dir upper
+dir="$wanted_dir"
+while true ; do
+    dir=$(dirname $dir)
+    if [ "$dir" = "$DEVO_BUILD_BASE_DIR" ] ; then
+        echo "$wanted_dir"
+        exit 1
+    fi
+    if [ -d "$dir" ] ; then
+        echo "$dir"
+        exit 0
+    fi
+done

@@ -1,0 +1,149 @@
+# This file must be sourced by the shell
+
+if [ -z "$DEVO_OVERLAY_DIR" ] ; then
+    DEVO_OVERLAY_DIR=$HOME/.devo
+fi
+
+# Prepend $1 to common environment variables
+_devo_prepend_prefix() {
+    local prefix=$1
+    export PKG_CONFIG_PATH=$prefix/lib/pkgconfig:$PKG_CONFIG_PATH
+    export LD_LIBRARY_PATH=$prefix/lib:$LD_LIBRARY_PATH
+    export CMAKE_PREFIX_PATH=$prefix:$CMAKE_PREFIX_PATH
+    export PATH=$prefix/bin:$PATH
+    export PYTHONPATH=$prefix/site-packages:$PYTHONPATH
+}
+
+# Reset common environment variables
+_devo_reset() {
+    unset KDEHOME
+    unset XDG_DATA_HOME
+    unset XDG_CACHE_HOME
+    unset XDG_CONFIG_HOME
+
+    unset KDEVARTMP
+    unset KDETMP
+
+    unset XDG_DATA_DIRS
+    unset XDG_CONFIG_DIRS
+
+    unset LD_LIBRARY_PATH
+    unset KDEDIR
+    unset KDEDIRS
+    unset QTDIR
+    unset QT_PLUGIN_PATH
+    unset PKG_CONFIG_PATH
+    unset CMAKE_PREFIX_PATH
+    unset QML_IMPORT_PATH
+    unset PYTHONPATH
+
+    local name
+    env | awk -F= '$1 ~ "^DEVO_" { print $1 }' | while read name ; do
+        case "$name" in
+        DEVO_OVERLAY_DIR)
+            ;;
+        DEVO_BUILD_BASE_ROOT_DIR)
+            ;;
+        *)
+            unset $name
+            ;;
+        esac
+    done
+}
+
+_check_overlay() {
+    if [ -z "$DEVO_NAME" ] ; then
+        echo "ERROR: No overlay loaded. Call devo_setup first" 1>&2
+        return 1
+    fi
+    return 0
+}
+
+devo_setup() {
+    _devo_reset
+    DEVO_NAME=$1
+    local overlay=$DEVO_OVERLAY_DIR/$DEVO_NAME
+    if [ ! -e "$overlay" ] ; then
+        echo "ERROR: No overlay named $DEVO_NAME" 1>&2
+        unset DEVO_NAME
+        return 1
+    fi
+    if [ -z "$DEVO_BUILD_BASE_ROOT_DIR" ] ; then
+        echo "ERROR: DEVO_BUILD_BASE_ROOT_DIR is not set"
+        unset DEVO_NAME
+        return 1
+    fi
+    if [ -e $DEVO_OVERLAY_DIR/_base ] ; then
+        . $DEVO_OVERLAY_DIR/_base
+    fi
+    export DEVO_NAME
+    export DEVO_BUILD_BASE_DIR=$DEVO_BUILD_BASE_ROOT_DIR/$DEVO_NAME
+    . $DEVO_OVERLAY_DIR/$DEVO_NAME
+    [ -n "$DEVO_PREFIX" ] || echo "WARNING DEVO_PREFIX not set"
+}
+
+devo_setup_from_pwd() {
+    case $PWD in
+    $DEVO_BUILD_BASE_ROOT_DIR/*)
+        local overlay=$(echo $PWD | sed "s|$DEVO_BUILD_BASE_ROOT_DIR/\?\([^/]*\).*|\\1|")
+        ;;
+    *)
+        # Not in a build dir
+        return
+        ;;
+    esac
+    if [ -e "$DEVO_OVERLAY_DIR/$overlay" -a "$DEVO_NAME" != "$overlay" ] ; then
+        echo "devo: loading overlay '$overlay'"
+        devo_setup $overlay
+    fi
+}
+
+__yesno() {
+    local answer
+    echo -n "$1 "
+    # __YESNO_ANSWER is used by tests to answer questions automatically
+    if [ -n "$__YESNO_ANSWER" ] ; then
+        answer="$__YESNO_ANSWER"
+    else
+        read answer
+    fi
+    case "$answer" in
+    y|Y)
+        return 0
+        ;;
+    *)
+        return 1
+        ;;
+    esac
+}
+
+devo_cb() {
+    local dir
+    _check_overlay || return 1
+    if dir=$(devo_getbuilddir) ; then
+        cd "$dir"
+        return
+    fi
+    if [ -z "$dir" ] ; then
+        echo "ERROR: No build dir found for $PWD"
+        return
+    fi
+    if __yesno "'$dir' does not exist. Create it?" ; then
+        mkdir -p "$dir"
+        cd "$dir"
+        return
+    fi
+}
+
+devo_cs() {
+    local dir
+    _check_overlay || return 1
+    dir=$(devo_getsourcedir)
+    if [ -d "$dir" ] ; then
+        cd "$dir"
+    else
+        echo "ERROR: No source dir found for $PWD"
+    fi
+}
+
+# vi: filetype=sh

@@ -1,0 +1,23 @@
+#!/bin/sh
+set -e
+
+. ./setup
+
+devo_setup ov1
+
+for x in prj1 prj2/subprj ; do
+    mkdir -p $DEVO_BUILD_BASE_DIR/$x
+    mkdir -p $DEVO_SOURCE_BASE_DIR/$x
+
+    cd $DEVO_BUILD_BASE_DIR/$x
+
+    devo_cs
+    tst_equal "$PWD" "$DEVO_SOURCE_BASE_DIR/$x"
+done
+
+# Running devo_cs from an unknown dir should not change PWD
+unknown_dir=$DEVO_BUILD_BASE_DIR/prj3
+mkdir -p $unknown_dir
+cd $unknown_dir
+devo_cs > /dev/null
+tst_equal "$PWD" "$unknown_dir"
