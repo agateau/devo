@@ -51,6 +51,14 @@ _devo_reset() {
     done
 }
 
+_check_overlay() {
+    if [ -z "$DEVO_NAME" ] ; then
+        echo "ERROR: No overlay loaded. Call devo_setup first" 1>&2
+        return 1
+    fi
+    return 0
+}
+
 devo_setup() {
     _devo_reset
     DEVO_NAME=$1
@@ -111,6 +119,7 @@ __yesno() {
 
 devo_cb() {
     local dir
+    _check_overlay || return 1
     if dir=$(devo_getbuilddir) ; then
         cd "$dir"
         return
@@ -128,6 +137,7 @@ devo_cb() {
 
 devo_cs() {
     local dir
+    _check_overlay || return 1
     dir=$(devo_getsourcedir)
     if [ -d "$dir" ] ; then
         cd "$dir"
