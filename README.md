@@ -30,9 +30,9 @@ Here is an example of what the dir hierarchy could look like:
                 lib
                 ...
 
-With such a setup, one could switch between overlays like this:
+With such a setup, one could start a shell on using `overlay1` like this:
 
-    devo_setup overlay1
+    devo_sh overlay1
 
 After this command, assuming `overlay1` has been correctly set up,
 `$HOME/install/overlay1/bin` would be in $PATH, making it possible to run
@@ -112,6 +112,15 @@ And other variables relevant for your environment:
 TODO: document `_devo_prepend_prefix`.
 
 ## Tools
+
+### `devo_sh`
+
+Starts a new shell with the specified overlay loaded:
+
+    devo_sh work
+
+Starts a new shell with the "work" overlay. Leave the shell with Ctrl+D or
+`exit` to unload all the changes.
 
 ### `devo_setup`
 
