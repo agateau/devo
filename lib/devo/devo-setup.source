@@ -14,6 +14,11 @@ _devo_prepend_prefix() {
     export PYTHONPATH=$prefix/site-packages:$PYTHONPATH
 }
 
+# Prepend $1 to $PATH
+_devo_prepend_path() {
+    export PATH=$1:$PATH
+}
+
 # Reset common environment variables
 _devo_reset() {
     unset KDEHOME
