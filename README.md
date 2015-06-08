@@ -83,12 +83,17 @@ specific to an overlay.
 
 ## Initial setup
 
-First, add the following lines to your shell:
+First, create the `~/.devo/` dir. This dir will contain all the overlay
+definitions.
+
+Next create a file named `~/.devo/_base`. This file is loaded before activating
+any overlay. Define the `DEVO_BUILD_BASE_ROOT_DIR` in it:
 
     export DEVO_BUILD_BASE_ROOT_DIR=/path/to/build/root/dir
-    . /path/to/devo/lib/devo/devo-setup.source
 
-Then, create `~/.devo/`. This dir will contain all the overlay definitions.
+Finally, add the following lines to your shell:
+
+    . /path/to/devo/lib/devo/devo-setup.source
 
 ## Creating an overlay
 
@@ -181,16 +186,11 @@ When outside of a source dir, `devo_cb` prints an error.
 When in a build dir, change to the matching source dir if it exists, otherwise
 stays there.
 
-## The `~/.devo/_base` file
+## Interesting variables to set in `~/.devo/_base`
 
-You can create a `~/.devo/_base` file defining common environment variables.
-This file is sourced before loading a new overlay.
-
-Here is an example:
-
-    export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin
-    export CC=$HOME/opt/cc/gcc
-    export CXX=$HOME/opt/cc/g++
+Since `~/.devo/_base` is sourced before loading a new overlay, you can define a
+base environment in it, for example you can define a base value for `$PATH` or
+for `$CC` and `$CXX`.
 
 ## Shell integration goodies
 

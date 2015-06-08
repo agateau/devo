@@ -73,13 +73,15 @@ devo_setup() {
         unset DEVO_NAME
         return 1
     fi
+    if [ -e $DEVO_OVERLAY_DIR/_base ] ; then
+        . $DEVO_OVERLAY_DIR/_base
+    fi
+    # Check for $DEVO_BUILD_BASE_ROOT_DIR after sourcing _base so that one can
+    # define it in _base
     if [ -z "$DEVO_BUILD_BASE_ROOT_DIR" ] ; then
         echo "ERROR: DEVO_BUILD_BASE_ROOT_DIR is not set"
         unset DEVO_NAME
         return 1
-    fi
-    if [ -e $DEVO_OVERLAY_DIR/_base ] ; then
-        . $DEVO_OVERLAY_DIR/_base
     fi
     export DEVO_NAME
     export DEVO_BUILD_BASE_DIR=$DEVO_BUILD_BASE_ROOT_DIR/$DEVO_NAME
