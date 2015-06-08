@@ -114,7 +114,13 @@ And other variables relevant for your environment:
 - `$PKG_CONFIG_PATH`
 - ...
 
-TODO: document `_devo_prepend_prefix`.
+Devo also provides some shell functions which can be used in overlay files:
+
+- `_devo_prepend_prefix <arg>`: assume `$arg` is an install prefix and prepend
+  its sub dirs (`$arg/bin`, `$arg/lib`...) to `$PKG_CONFIG_PATH`,
+  `$LD_LIBRARY_PATH`, `$CMAKE_PREFIX_PATH`, `$PATH` and `$PYTHONPATH`.
+
+- `_devo_prepend_path <arg>`: shortcut for `export PATH=$arg:$PATH`.
 
 ## Tools
 
