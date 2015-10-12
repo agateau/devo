@@ -19,6 +19,11 @@ _devo_prepend_path() {
     export PATH=$1:$PATH
 }
 
+# Append $1 to $PATH
+_devo_append_path() {
+    export PATH=$PATH:$1
+}
+
 # Reset common environment variables
 _devo_reset() {
     unset KDEHOME

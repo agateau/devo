@@ -122,6 +122,8 @@ Devo also provides some shell functions which can be used in overlay files:
 
 - `_devo_prepend_path <arg>`: shortcut for `export PATH=$arg:$PATH`.
 
+- `_devo_append_path <arg>`: shortcut for `export PATH=$PATH:$arg`.
+
 ## Tools
 
 ### `devo_sh`
