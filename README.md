@@ -159,6 +159,9 @@ will use `$DEVO_SOURCE_BASE_DIR/foo` as the source dir.
 
 Wrapper around make: switch to the build dir and runs make from there.
 
+If there is no `Makefile` file in the build dir, but there is one file whose
+name starts with `Makefile`, uses this file instead.
+
 ### `devo_run`
 
 Run a command using a specific overlay:

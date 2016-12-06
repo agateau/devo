@@ -5,6 +5,10 @@ die() {
     exit 1
 }
 
+info() {
+    echo "INFO: $*" 1>&2
+}
+
 checkvar() {
     local name
     name=$1
