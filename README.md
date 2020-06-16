@@ -30,9 +30,9 @@ Here is an example of what the dir hierarchy could look like:
                 lib
                 ...
 
-With such a setup, one could switch between overlays like this:
+With such a setup, one could start a shell on using `overlay1` like this:
 
-    devo_setup overlay1
+    devo_sh overlay1
 
 After this command, assuming `overlay1` has been correctly set up,
 `$HOME/install/overlay1/bin` would be in $PATH, making it possible to run
@@ -83,12 +83,17 @@ specific to an overlay.
 
 ## Initial setup
 
-First, add the following lines to your shell:
+First, create the `~/.devo/` dir. This dir will contain all the overlay
+definitions.
+
+Next create a file named `~/.devo/_base`. This file is loaded before activating
+any overlay. Define the `DEVO_BUILD_BASE_ROOT_DIR` in it:
 
     export DEVO_BUILD_BASE_ROOT_DIR=/path/to/build/root/dir
-    . /path/to/devo/lib/devo/devo-setup.source
 
-Then, create `~/.devo/`. This dir will contain all the overlay definitions.
+Finally, add the following lines to your shell:
+
+    . /path/to/devo/lib/devo/devo-setup.source
 
 ## Creating an overlay
 
@@ -109,9 +114,26 @@ And other variables relevant for your environment:
 - `$PKG_CONFIG_PATH`
 - ...
 
-TODO: document `_devo_prepend_prefix`.
+Devo also provides some shell functions which can be used in overlay files:
+
+- `_devo_prepend_prefix <arg>`: assume `$arg` is an install prefix and prepend
+  its sub dirs (`$arg/bin`, `$arg/lib`...) to `$PKG_CONFIG_PATH`,
+  `$LD_LIBRARY_PATH`, `$CMAKE_PREFIX_PATH`, `$PATH` and `$PYTHONPATH`.
+
+- `_devo_prepend_path <arg>`: shortcut for `export PATH=$arg:$PATH`.
+
+- `_devo_append_path <arg>`: shortcut for `export PATH=$PATH:$arg`.
 
 ## Tools
+
+### `devo_sh`
+
+Starts a new shell with the specified overlay loaded:
+
+    devo_sh work
+
+Starts a new shell with the "work" overlay. Leave the shell with Ctrl+D or
+`exit` to unload all the changes.
 
 ### `devo_setup`
 
@@ -136,6 +158,9 @@ will use `$DEVO_SOURCE_BASE_DIR/foo` as the source dir.
 ### `devo_make`
 
 Wrapper around make: switch to the build dir and runs make from there.
+
+If there is no `Makefile` file in the build dir, but there is one file whose
+name starts with `Makefile`, uses this file instead.
 
 ### `devo_run`
 
@@ -172,16 +197,11 @@ When outside of a source dir, `devo_cb` prints an error.
 When in a build dir, change to the matching source dir if it exists, otherwise
 stays there.
 
-## The `~/.devo/_base` file
+## Interesting variables to set in `~/.devo/_base`
 
-You can create a `~/.devo/_base` file defining common environment variables.
-This file is sourced before loading a new overlay.
-
-Here is an example:
-
-    export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin
-    export CC=$HOME/opt/cc/gcc
-    export CXX=$HOME/opt/cc/g++
+Since `~/.devo/_base` is sourced before loading a new overlay, you can define a
+base environment in it, for example you can define a base value for `$PATH` or
+for `$CC` and `$CXX`.
 
 ## Shell integration goodies
 

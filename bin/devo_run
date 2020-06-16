@@ -3,8 +3,18 @@ set -e
 
 . $(dirname $0)/../lib/devo/devo-setup.source
 
+changedir=false
+if [ $1 = "-c" ] ; then
+    changedir=true
+    shift
+fi
+
 prefix=$1
 shift
 devo_setup $prefix
+
+if [ "$changedir" = true ] ; then
+    cd $DEVO_SOURCE_BASE_DIR
+fi
 
 exec $*

@@ -2,8 +2,29 @@
 set -e
 
 . $(dirname $0)/../lib/devo/devo-setup.source
+. $(dirname $0)/../lib/devo/functions
 
 dir=$(devo_getbuilddir)
-echo "Running make in '$dir'"
+info "Running make in '$dir'"
 cd $dir
-exec make $*
+if [ -f "Makefile" ] ; then
+    exec make $*
+fi
+
+case "$*" in
+" * -f *")
+    # Specific Makefile requested
+    exec make $*
+    ;;
+*)
+    ;;
+esac
+
+makefile=$(ls Makefile* 2> /dev/null || true)
+if [ -f "$makefile" ] ; then
+    # We found only one file matching Makefile*, use it
+    info "No Makefile found, using '$makefile' instead"
+    exec make -f "$makefile" $*
+fi
+
+die "No Makefile found in '$dir'"
